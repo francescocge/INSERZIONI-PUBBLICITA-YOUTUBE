@@ -2,10 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.1 — 26/10/2026
-     Modifica v3.0 → v3.1: con i BPM le stanze durano battute intere, ma le battute sono distribuite tra le stanze in modo che il totale resti vicino ai secondi richiesti (21 s con cartello).
-     Modifiche v2.9 → v3.0: interfaccia responsive (PC: pannello a sinistra e anteprima a destra; smartphone: una colonna con pulsanti grandi); stile "Acquaglass" per i box (interfaccia e scritte sul video); formato Instagram / TikTok 9:16 con scritte in alto al centro (zona sicura) e più grandi; durata predefinita 21 s totali con stacchi netti; codice ripulito.
-     Pubblicazione: file unico, senza dipendenze esterne. Per GitHub Pages caricare index.html (copia identica di questo file).
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.2 — 26/10/2026
+     NOVITÀ v2.9 → v3.2 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+     3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
+     Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
      Modifiche v2.7 → v2.8: niente più nero all'inizio del filmato (il primo clip viene caricato e mostrato prima; registrazione e musica partono solo quando il video parte davvero).
      Modifiche v2.6 → v2.7: ripristinato il motore di riproduzione e il vetro della v2.3 (velocità ai cambi stanza, scia di movimento e sfocatura come nella 2.3); tolti il filtro sulla velocità e la semplificazione automatica degli effetti; restano scheda, logo a destra, scheda "Video creato".
@@ -27,10 +27,11 @@
      Modifiche v1.0 → v1.1: durata finale/velocità (condensa una visita lunga), audio originale opzionale, colori più vivi, schermata finale spenta di default.
      HTML unico, offline. Unisce clip + musica + overlay (prezzo, zona, logo, agenzia) in un video verticale 9:16. -->
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Video Studio Immobiliare: crea video verticali (Instagram, TikTok) e orizzontali (YouTube) con musica, scritte e cartello finale.">
+<!-- [v3.2 NUOVO] metadati per GitHub Pages -->
+<meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.1</title>
+<title>Video Studio Immobiliare v3.2</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -40,7 +41,7 @@ header{display:flex;align-items:center;gap:14px;padding:22px clamp(16px,4vw,48px
 h1{font:600 clamp(20px,3vw,28px)/1.2 Georgia,"Times New Roman",serif;margin:0;letter-spacing:.3px}
 .ver{margin-left:auto;font-size:13px;color:var(--gold2);border:1px solid var(--gold);border-radius:999px;padding:4px 12px}
 main{display:grid;gap:24px;padding:0 clamp(16px,4vw,48px) 48px;max-width:1200px;margin:auto}
-
+@media(min-width:900px){main{grid-template-columns:1fr 480px;align-items:start}.prev{position:sticky;top:16px}}
 .card{background:linear-gradient(180deg,var(--navy2),var(--card));border:1px solid var(--line);border-radius:22px;padding:22px;margin-bottom:20px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 h2{font:600 20px Georgia,serif;margin:0 0 4px;color:var(--gold2)}
 .hint{color:var(--slate);font-size:14px;margin:0 0 16px}
@@ -100,9 +101,9 @@ details.more{margin-top:18px;border:1px solid var(--line);border-radius:14px;pad
 details.more>summary{cursor:pointer;color:var(--gold2);font-weight:600;padding:12px 0}
 section.card{scroll-margin-top:72px}
 .big{width:100%;font-size:19px;padding:17px 20px}
-
+.prev{top:68px!important}
 label{font-size:15px}.hint,.note{font-size:15px}
-
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.sub{display:none}}
 
 .howto{max-width:1296px;margin:14px auto 0;padding:0 clamp(16px,4vw,48px)}
 .howto .box{background:linear-gradient(180deg,var(--navy2),var(--card));border:1px solid var(--line);border-radius:18px;padding:16px 20px}
@@ -123,8 +124,8 @@ label{font-size:15px}.hint,.note{font-size:15px}
 .slot .st small{color:var(--gold2);font-weight:400;margin-left:6px}
 .slot img{width:100%;height:170px;object-fit:contain;background:#0d1a2b;border-radius:10px;display:block}
 .slot .sn{font-size:13px;color:var(--slate);margin:8px 0;min-height:20px}
-
-
+@media(max-width:800px){.steps{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}}
+@media(max-width:600px){.slots{grid-template-columns:1fr}}
 
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:11px;border-radius:12px;border:1px solid var(--line);background:#12243b;color:var(--txt);cursor:pointer;font:600 14px "Segoe UI",system-ui,sans-serif}
@@ -132,24 +133,26 @@ label{font-size:15px}.hint,.note{font-size:15px}
 .tab:disabled{opacity:.45;cursor:default}
 #rv{width:100%;max-height:72vh;border-radius:20px;background:#000;display:block}
 #revbox[hidden]{display:none}
+@media(min-width:900px){.prev{max-height:calc(100vh - 84px);overflow-y:auto}}
 
-
-/* ===== v3.0 · Acquaglass (vetro / acqua) per i box ===== */
-:root{--aq-bg:linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15)),rgba(16,37,66,.45);--aq-bd:1px solid rgba(255,255,255,.3);--aq-sh:0 8px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.22)}
+/* ===== [v3.2 NUOVO] Acquaglass · interfaccia =====
+   Sfondo rgba(16,37,66,.65), bordo luminoso 1px rgba(255,255,255,.4), angoli molto arrotondati, ombra morbida. */
+:root{--aq-bg:rgba(16,37,66,.65);--aq-bd:1px solid rgba(255,255,255,.4);--aq-sh:0 8px 28px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.18)}
 html{background:#09131f}
 body{background-color:#09131f;background-image:radial-gradient(900px 520px at 8% -6%,rgba(70,150,215,.38),transparent 62%),radial-gradient(760px 520px at 96% 18%,rgba(45,120,185,.30),transparent 62%),radial-gradient(900px 640px at 50% 112%,rgba(30,95,160,.34),transparent 62%),linear-gradient(180deg,#0d1a2b,#09131f);background-attachment:fixed}
-.card,.howto .box,.slot,details.more,.chip,.tab,.seg button,.nav a{background:var(--aq-bg);border:var(--aq-bd);box-shadow:var(--aq-sh);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+.card,.howto .box,.slot,details.more,.chip,.tab,.seg button,.nav a{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,0)),var(--aq-bg);border:var(--aq-bd);box-shadow:var(--aq-sh);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+.card{border-radius:28px}.howto .box{border-radius:26px}.slot,details.more{border-radius:22px}.seg button{border-radius:20px}
 .nav{background:rgba(9,19,31,.72)}
-input[type=text],input[type=number],select{background:var(--aq-bg);border:var(--aq-bd);color:var(--txt)}
+input[type=text],input[type=number],select{background:var(--aq-bg);border:var(--aq-bd);border-radius:16px;color:var(--txt)}
 select option{background:#16283f;color:#eef2f7}
-.chip.ok{background:linear-gradient(rgba(255,255,255,.10),rgba(255,255,255,.10)),rgba(18,80,58,.55);border-color:rgba(140,235,180,.45)}
-.chip.no{background:linear-gradient(rgba(255,255,255,.10),rgba(255,255,255,.10)),rgba(110,70,20,.55);border-color:rgba(255,200,120,.45)}
+.chip.ok{background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),rgba(18,80,58,.65);border-color:rgba(140,235,180,.5)}
+.chip.no{background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),rgba(110,70,20,.65);border-color:rgba(255,200,120,.5)}
 canvas{border:var(--aq-bd)}
 .btn,.mini{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
-/* ===== v3.0 · Layout responsive =====
+/* ===== [v3.2 NUOVO] Layout responsive =====
    PC (≥900px): pannello di controllo a sinistra, anteprima fissa a destra.
-   Smartphone / tablet (<900px): una sola colonna scorrevole, pulsanti grandi da toccare. */
+   Smartphone / tablet (<900px): una sola colonna scorrevole, pulsanti e campi grandi da toccare. */
 @media screen and (min-width:900px){
   main{grid-template-columns:1fr 480px;align-items:start}
   .prev{position:sticky;top:68px;max-height:calc(100vh - 84px);overflow-y:auto}
@@ -157,7 +160,7 @@ canvas{border:var(--aq-bd)}
 @media screen and (max-width:899px){
   main{display:block;padding:0 14px 40px}
   .prev{position:static;max-height:none;overflow:visible}
-  .card{padding:18px;border-radius:20px}
+  .card{padding:18px}
   .steps{grid-template-columns:1fr 1fr}
   .grid3{grid-template-columns:1fr}
   .btn,.mini,.tab,.seg button,.nav a{min-height:52px}
@@ -172,7 +175,7 @@ canvas{border:var(--aq-bd)}
   .slots{grid-template-columns:1fr}
   body{padding-bottom:env(safe-area-inset-bottom)}
 }
-@media screen and (max-width:600px){.grid2{grid-template-columns:1fr}.sub{display:none}}
+@media screen and (max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -183,7 +186,7 @@ canvas{border:var(--aq-bd)}
 </header>
 <nav class="nav"><a href="#s1">1 · Video</a><a href="#s2">2 · Musica</a><a href="#s3">3 · Formato</a><a href="#s4">4 · Scritte e scheda</a><a href="#s5">5 · Cartello</a><a href="#s6">6 · Crea</a><a href="#sadv">Avanzate</a></nav>
 <div class="howto"><div class="box"><div class="ht">Come si fa: 6 passi, sempre lo stesso percorso</div>
-  <ol class="steps"><li><b>1</b><span>Scegli il video</span></li><li><b>2</b><span>Aggiungi la musica</span></li><li><b>3</b><span>Scegli YouTube o Instagram / TikTok</span></li><li class="o"><b>4</b><span>Scritte, logo e scheda<i>facoltativo</i></span></li><li class="o"><b>5</b><span>Cartello finale<i>facoltativo</i></span></li><li><b>6</b><span>Premi «Crea video» e rivedilo</span></li></ol></div></div>
+  <ol class="steps"><li><b>1</b><span>Scegli il video</span></li><li><b>2</b><span>Aggiungi la musica</span></li><li><b>3</b><span>Scegli il formato (16:9 o 9:16)</span></li><li class="o"><b>4</b><span>Scritte, logo e scheda<i>facoltativo</i></span></li><li class="o"><b>5</b><span>Cartello finale<i>facoltativo</i></span></li><li><b>6</b><span>Premi «Crea video» e rivedilo</span></li></ol></div></div>
 <div class="status" id="chips"></div>
 
 <main>
@@ -193,7 +196,7 @@ canvas{border:var(--aq-bd)}
     <div class="row"><label class="btn sec" for="avid">Scegli il video</label><span id="avn" class="hint" style="align-self:center;margin:0">Nessun video</span></div>
     <input type="file" id="avid" accept="video/*">
     <div class="grid3" style="margin-top:16px">
-      <label>Durata totale (secondi, cartello incluso)<input type="number" id="adur" min="5" max="600" value="21"></label>
+      <label>Durata finale (secondi)<input type="number" id="adur" min="5" max="600" value="30"></label>
       <label>Numero di stanze (0 = automatico)<input type="number" id="arooms" min="0" max="20" value="0"></label>
       <label>Forza dell'accelerazione<select id="rk"><option value="2">Leggera</option><option value="3" selected>Media</option><option value="4">Forte</option></select></label>
     </div>
@@ -219,7 +222,7 @@ canvas{border:var(--aq-bd)}
 
   <section class="card" id="s3">
     <div class="sh"><span class="num">3</span><div><h2>Formato <span class="tag req">obbligatorio</span></h2><p class="hint">Scegli dove pubblicherai il video. Il tool usa da solo il cartello giusto per il formato scelto.</p></div></div>
-    <div class="seg" id="segfmt"><button type="button" data-f="h">YouTube<small>Orizzontale 16:9 · schermo intero</small></button><button type="button" data-f="v">Instagram / TikTok<small>Verticale 9:16 · Reels, Storie, TikTok</small></button></div>
+    <div class="seg" id="segfmt"><button type="button" data-f="h">YouTube / Immobiliare.it<small>Orizzontale 16:9 · predefinito</small></button><button type="button" data-f="v">Instagram / TikTok / Shorts<small>Verticale 9:16</small></button></div>
     <select id="fmt" hidden><option value="h">Orizzontale 16:9</option><option value="v">Verticale 9:16</option></select>
     <div class="grid2">
       <label>Qualità<select id="q"><option value="1080">Alta (Full HD)</option><option value="720">Standard (HD, più leggero)</option></select></label>
@@ -227,6 +230,8 @@ canvas{border:var(--aq-bd)}
       <label>Fluidità del filmato<select id="fps"><option value="30">Standard · 30 fotogrammi al secondo (consigliata)</option><option value="60">Alta · 60 fotogrammi al secondo (PC potente)</option></select></label>
     </div>
     <p class="hint" id="fmtnote" style="margin-top:12px"></p>
+    <!-- [v3.2 NUOVO] risoluzione di uscita in base al formato -->
+    <p class="hint" id="fmtres"></p>
   </section>
 
   <section class="card" id="s4">
@@ -264,7 +269,7 @@ canvas{border:var(--aq-bd)}
     <div class="sh"><span class="num">5</span><div><h2>Cartello finale <span class="tag opt">facoltativo</span></h2><p class="hint">I due cartelli di Servizi Immobiliari Genova sono già inclusi: non devi caricare nulla. Quello in evidenza (bordo oro) è il cartello usato con il formato scelto al punto 3.</p></div></div>
     <div class="slots">
       <div class="slot" id="slot_h"><div class="st">YouTube<small>16:9 orizzontale</small></div><img id="th_h" alt="Cartello 16:9"><div class="sn" id="sn_h"></div><button class="mini wide" id="rs_h" type="button" style="display:none">Torna a quello incluso</button></div>
-      <div class="slot" id="slot_v"><div class="st">Instagram / TikTok<small>9:16 verticale</small></div><img id="th_v" alt="Cartello 9:16"><div class="sn" id="sn_v"></div><button class="mini wide" id="rs_v" type="button" style="display:none">Torna a quello incluso</button></div>
+      <div class="slot" id="slot_v"><div class="st">Instagram / TikTok / Shorts<small>9:16 verticale</small></div><img id="th_v" alt="Cartello 9:16"><div class="sn" id="sn_v"></div><button class="mini wide" id="rs_v" type="button" style="display:none">Torna a quello incluso</button></div>
     </div>
     <label class="chk"><input type="checkbox" id="afin" checked> Mostra il cartello alla fine del video</label>
     <div class="grid2" style="margin-top:14px"><label>Durata del cartello (secondi)<input type="number" id="pdur" min="1" max="15" step="0.5" value="3"></label></div>
@@ -327,7 +332,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.1";
+const VERSION="3.2";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -364,22 +369,16 @@ function renderList(){
     L.appendChild(d);
   });
   const tot=total();
-  $("#tot").textContent=clips.length?`${clips.length} clip · durata finale ${tot.toFixed(1)} s · ${(+$("#pcd").value||0)>0?"ogni clip circa "+(+$("#pcd").value).toFixed(1)+" s":"velocità "+speed().toFixed(2).replace(".",",")+"×"}`:"Nessun clip caricato.";
+  $("#tot").textContent=clips.length?`${clips.length} clip · durata finale ${tot.toFixed(1)} s · ${perClip()>0?"ogni clip "+perClip()+" s":"velocità "+speed().toFixed(2).replace(".",",")+"×"}`:"Nessun clip caricato.";
 }
 function speed(){const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
-/* Durata di una stanza. Con i BPM: battute intere, distribuite tra le stanze (Bresenham) così che il totale resti vicino a quello richiesto. */
-const perClip=c=>{
-  const d=+$("#pcd").value||0,b=+$("#abpm").value||0;
-  if(!(d>0))return 0;if(!(b>0))return d;
-  const bar=240/b,n=Math.max(1,clips.length),i=Math.max(0,clips.indexOf(c)),nb=Math.max(n,Math.round(d*n/bar));
-  return (Math.floor((i+1)*nb/n)-Math.floor(i*nb/n))*bar;
-};
-const isRamp=()=>$("#ramp").checked&&(+$("#pcd").value||0)>0;
+const perClip=()=>{let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
+const isRamp=()=>$("#ramp").checked&&perClip()>0;
 const rk=()=>+$("#rk").value||3,RF=0.22;
 const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-u)/RF),2));
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
-const cspd=c=>{const pc=perClip(c);return pc>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/pc,0.5,isRamp()?8/rk():8):speed()};
-const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()?rampI():1);
+const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,isRamp()?8/rk():8):speed();
+const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()&&perClip()>0?rampI():1);
 const total=()=>clips.reduce((a,c)=>a+clipDur(c),0)+($("#fin").checked&&clips.length?END:0);
 let aSrc={};
 async function autoLoad(f){
@@ -387,6 +386,11 @@ async function autoLoad(f){
   const url=URL.createObjectURL(f),d=await meta(url);
   if(!d){$("#avn").textContent="✗ Non riesco a leggere questo video";return}
   aSrc={url,name:f.name,dur:d};$("#avn").textContent="✓ "+f.name+" ("+Math.round(d)+" s)";
+}
+async function autoMusic(f){
+  try{actx=actx||new AudioContext();musicBuf=await actx.decodeAudioData(await f.arrayBuffer());
+    const t=f.name+" ("+Math.round(musicBuf.duration)+" s)";$("#amn").textContent="✓ "+t;$("#mname").textContent=t}
+  catch(x){musicBuf=null;$("#amn").textContent="✗ Non riesco a leggere questa musica: prova con un MP3"}
 }
 $("#avid").onchange=e=>{if(e.target.files[0])autoLoad(e.target.files[0])};
 $("#amus").onchange=e=>{if(e.target.files.length)addSongs([...e.target.files])};
@@ -474,7 +478,7 @@ $("#aimg").onchange=e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{const im=new Image();
     im.onload=()=>{const slot=im.width>=im.height?"h":"v";slotLoad(slot,fitImg(im,1600),f.name,true);
-      $("#aimn").textContent="✓ "+f.name+" messo nel cartello "+(slot==="h"?"YouTube (orizzontale)":"Instagram / TikTok (verticale)")+". L'altro non è cambiato."};
+      $("#aimn").textContent="✓ "+f.name+" messo nel cartello "+(slot==="h"?"YouTube (orizzontale)":"Instagram (verticale)")+". L'altro non è cambiato."};
     im.onerror=()=>{$("#aimn").textContent="✗ Non riesco a leggere questa immagine."};im.src=r.result};
   r.readAsDataURL(f);e.target.value="";
 };
@@ -491,10 +495,10 @@ $("#bAuto").onclick=async()=>{
   $("#nroom").value=+$("#arooms").value||clamp(Math.round(aSrc.dur/6),3,14);
   A.textContent="1/3 Cerco i cambi stanza…";renderList();
   await detectRooms(0);
-  const tgt=clamp((+$("#adur").value||21)-($("#fin").checked?END:0),4,600);
+  const tgt=clamp(+$("#adur").value||30,5,600);
   $("#pcd").value=(tgt/clips.length).toFixed(2);$("#trs").value="none";$("#kb").checked=false;renderList();
   const sp=clips.map(cspd);
-  A.textContent="2/3 "+clips.length+" stanze trovate. Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. Durata prevista: circa "+Math.round(total())+" s. 3/3 Creo il video con la musica…";
+  A.textContent="2/3 "+clips.length+" stanze trovate. Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
   await run(true);
   const a=$("#out a");
   if(a){A.textContent="✓ Video creato: "+clips.length+" stanze. "+lastChk+" Lo rivedi qui sopra nella scheda «Video creato»: premi play. ";A.appendChild(a.cloneNode(true))}
@@ -578,19 +582,21 @@ $("#flogo").onchange=e=>{
 function cover(el,sw,sh){const s=Math.max(W/sw,H/sh),w=sw*s,h=sh*s;g.drawImage(el,(W-w)/2,(H-h)/2,w,h)}
 function fit(txt,font,maxW,size){do{g.font=font.replace("#",size);size-=2}while(g.measureText(txt).width>maxW&&size>20)}
 const gcv=document.createElement("canvas"),gx=gcv.getContext("2d");
-/* Acquaglass: sfondo sfocato + rgba(16,37,66,.45) + velo rgba(255,255,255,.15), bordo sottile luminoso, angoli arrotondati, ombra morbida */
+/* [v3.2 NUOVO] Acquaglass sul canvas: sfondo sfocato + rgba(16,37,66,.65), bordo luminoso 1px rgba(255,255,255,.4),
+   angoli molto arrotondati (roundRect) e ombra morbida (shadowBlur = 20, in proporzione alla risoluzione). */
 function glass(x,y,w,h,r,S){
-  const m=40*S,sx=Math.max(0,Math.floor(x-m)),sy=Math.max(0,Math.floor(y-m)),ex=Math.min(W,Math.ceil(x+w+m)),ey=Math.min(H,Math.ceil(y+h+m)),sw=ex-sx,sh=ey-sy;
+  const k=S*1.5,m=40*S,sx=Math.max(0,Math.floor(x-m)),sy=Math.max(0,Math.floor(y-m)),ex=Math.min(W,Math.ceil(x+w+m)),ey=Math.min(H,Math.ceil(y+h+m)),sw=ex-sx,sh=ey-sy;
   if(gcv.width<sw||gcv.height<sh){gcv.width=Math.max(gcv.width,sw);gcv.height=Math.max(gcv.height,sh)}
   gx.clearRect(0,0,sw,sh);gx.drawImage(cv,sx,sy,sw,sh,0,0,sw,sh);
-  g.save();g.shadowColor="rgba(0,0,0,.38)";g.shadowBlur=26*S;g.shadowOffsetY=8*S;
+  g.save();g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=20*k;g.shadowOffsetY=6*k;
   g.fillStyle="#000";g.beginPath();g.roundRect(x,y,w,h,r);g.fill();g.restore();
   g.save();g.beginPath();g.roundRect(x,y,w,h,r);g.clip();
   if("filter" in g)g.filter="blur("+Math.max(6,18*S)+"px) saturate(1.3) brightness(1.05)";
   g.drawImage(gcv,0,0,sw,sh,sx,sy,sw,sh);if("filter" in g)g.filter="none";
-  g.fillStyle="rgba(16,37,66,.45)";g.fillRect(x,y,w,h);
-  g.fillStyle="rgba(255,255,255,.15)";g.fillRect(x,y,w,h);g.restore();
-  g.save();g.strokeStyle="rgba(255,255,255,.3)";g.lineWidth=Math.max(1,1.5*S);g.beginPath();g.roundRect(x+.5,y+.5,w-1,h-1,r);g.stroke();g.restore();
+  g.fillStyle="rgba(16,37,66,.65)";g.fillRect(x,y,w,h);
+  const gr=g.createLinearGradient(x,y,x,y+h);gr.addColorStop(0,"rgba(255,255,255,.16)");gr.addColorStop(1,"rgba(255,255,255,0)");
+  g.fillStyle=gr;g.fillRect(x,y,w,h);g.restore();
+  g.save();g.strokeStyle="rgba(255,255,255,.4)";g.lineWidth=Math.max(1,k);g.beginPath();g.roundRect(x+.5,y+.5,w-1,h-1,r);g.stroke();g.restore();
 }
 function box(GL,x,y,w,h,r,S){
   if(GL){glass(x,y,w,h,r,S);return}
@@ -612,73 +618,127 @@ function schedaItems(){
   if(v("s_altro"))o.push(v("s_altro"));
   return o;
 }
-/* Blocchi di testo. Z = ingrandimento (verticale 1,3), ctr = centrati (verticale) oppure a sinistra/destra (orizzontale). Ognuno restituisce il bordo inferiore. */
-function infoCard(zone,items,top,S,GL,Z,ctr){
-  const pad=24*S*Z,lh=40*S*Z,maxW=Math.min(W*(ctr?.88:.5),(ctr?980:820)*S*Z)-pad*2;
+function infoCard(zone,items,top,S,GL){
+  const pad=24*S,lh=40*S,maxW=Math.min(W*.5,820*S)-pad*2;
   let zf="",zw=0;
-  if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,maxW,36*S*Z);zf=g.font;zw=g.measureText(zone).width}
-  g.font=`500 ${26*S*Z}px "Segoe UI",sans-serif`;
-  const cols=items.length>(ctr?4:6)?2:1,rows=Math.ceil(items.length/cols),colW=[];
-  for(let c=0;c<cols;c++){let m=0;for(let r=0;r<rows;r++){const it=items[c*rows+r];if(it)m=Math.max(m,g.measureText(it).width+24*S*Z)}colW.push(m)}
-  const iw=colW.reduce((x,y)=>x+y,0)+(cols-1)*26*S*Z,headH=zone?44*S*Z:0,gap=zone&&items.length?14*S*Z:0,listH=items.length?rows*lh-4*S*Z:0;
-  const pw=Math.max(zw,iw)+pad*2,ph=pad*2+headH+gap+listH,px=ctr?(W-pw)/2:40*S,py=top;
-  box(GL,px,py,pw,ph,20*S*Z,S);
+  if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,maxW,36*S);zf=g.font;zw=g.measureText(zone).width}
+  g.font=`500 ${26*S}px "Segoe UI",sans-serif`;
+  const cols=items.length>6?2:1,rows=Math.ceil(items.length/cols),colW=[];
+  for(let c=0;c<cols;c++){let m=0;for(let r=0;r<rows;r++){const it=items[c*rows+r];if(it)m=Math.max(m,g.measureText(it).width+24*S)}colW.push(m)}
+  const iw=colW.reduce((x,y)=>x+y,0)+(cols-1)*26*S,headH=zone?44*S:0,gap=zone&&items.length?14*S:0,listH=items.length?rows*lh-4*S:0;
+  const pw=Math.max(zw,iw)+pad*2,ph=pad*2+headH+gap+listH,px=40*S,py=top;
+  box(GL,px,py,pw,ph,20*S,S);
   g.textBaseline="alphabetic";
   if(zone){
     g.font=zf;g.fillStyle=GL?"#fff":"#ecd08a";if(GL){g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=6*S}
-    g.fillText(zone,px+pad,py+pad+33*S*Z);g.shadowBlur=0;
+    g.fillText(zone,px+pad,py+pad+33*S);g.shadowBlur=0;
     if(items.length){g.fillStyle="rgba(255,255,255,.35)";g.fillRect(px+pad,py+pad+headH+gap/2-1*S,pw-pad*2,Math.max(1,1.5*S))}
   }
   const yL=py+pad+headH+gap;
-  g.font=`500 ${26*S*Z}px "Segoe UI",sans-serif`;
+  g.font=`500 ${26*S}px "Segoe UI",sans-serif`;
   for(let c=0;c<cols;c++){
-    let x=px+pad;for(let k=0;k<c;k++)x+=colW[k]+26*S*Z;
+    let x=px+pad;for(let k=0;k<c;k++)x+=colW[k]+26*S;
     for(let r=0;r<rows;r++){
       const it=items[c*rows+r];if(!it)continue;
-      g.fillStyle="#ecd08a";g.beginPath();g.arc(x+5*S*Z,yL+r*lh+18*S*Z,4*S*Z,0,6.2832);g.fill();
+      g.fillStyle="#ecd08a";g.beginPath();g.arc(x+5*S,yL+r*lh+18*S,4*S,0,6.2832);g.fill();
       g.fillStyle="#fff";if(GL){g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=5*S}
-      g.fillText(it,x+22*S*Z,yL+r*lh+27*S*Z);g.shadowBlur=0;
+      g.fillText(it,x+22*S,yL+r*lh+27*S);g.shadowBlur=0;
     }
   }
-  return py+ph;
 }
-function badgeBox(ag,top,S,GL,Z,ctr){
-  const pad=18*S*Z;let lh=(ctr?82:100)*S*Z,lw=0;
-  if(logo){lw=logo.width/logo.height*lh;const mx=Math.min(W*(ctr?.5:.3),380*S*Z);if(lw>mx){lw=mx;lh=lw*logo.height/logo.width}}
-  g.font=`600 ${26*S*Z}px "Segoe UI",sans-serif`;
-  const tmax=W*(ctr?.7:.4)-pad*2,tw=ag?Math.min(g.measureText(ag).width,tmax):0;
-  const bw=Math.max(lw,tw)+pad*2,bh=pad*2+(logo?lh:0)+(ag?(logo?10*S*Z:0)+28*S*Z:0),bx=ctr?(W-bw)/2:W-40*S-bw;
-  box(GL,bx,top,bw,bh,24*S*Z,S);
-  let y=top+pad;
-  if(logo){g.drawImage(logo,bx+(bw-lw)/2,y,lw,lh);y+=lh+10*S*Z}
-  if(ag){g.fillStyle=GL?"#fff":"#ecd08a";if(GL){g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=6*S}
-    g.textAlign="center";g.textBaseline="alphabetic";g.fillText(ag,bx+bw/2,y+22*S*Z,tmax);g.textAlign="left";g.shadowBlur=0}
-  return top+bh;
-}
-function priceBox(price,top,S,GL,Z,ctr){
-  const pad=24*S*Z;fit(price,`600 #px Georgia,serif`,W-80*S-pad*2,50*S*Z);
-  const pf=g.font,pw=g.measureText(price).width+pad*2,ph=pad*2+46*S*Z,px=ctr?(W-pw)/2:40*S,py=top==null?H-60*S-ph:top;
-  box(GL,px,py,pw,ph,20*S*Z,S);
-  g.font=pf;g.textBaseline="alphabetic";g.fillStyle="#fff";if(GL){g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=6*S}
-  g.fillText(price,px+pad,py+pad+38*S*Z);g.shadowBlur=0;
-  return py+ph;
-}
-function overlay(t){
-  const S=Math.min(W,H)/1080,a=clamp((t-0.4)/0.6,0,1),V=W<H,Z=V?1.3:1,TY=(V?200:50)*S,GL=$("#tstyle").value==="glass";if(a<=0)return;
+/* [v2.9] Layout precedente delle scritte: mantenuto invariato ma non più usato (per ripristinarlo rinomina overlayV29 in overlay). */
+function overlayV29(t){
+  const S=Math.min(W,H)/1080,a=clamp((t-0.4)/0.6,0,1),TY=(W>H?50:170)*S,GL=$("#tstyle").value==="glass";if(a<=0)return;
   const zone=$("#zone").value.trim(),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
   g.save();g.globalAlpha=a;
-  if(V){
-    /* verticale (Instagram / TikTok): tutto in alto al centro, nella zona sicura, più grande */
-    let y=TY;
-    if(ag||logo)y=badgeBox(ag,y,S,GL,Z,true)+16*S*Z;
-    if(zone||items.length)y=infoCard(zone,items,y,S,GL,Z,true)+16*S*Z;
-    if(price)priceBox(price,y,S,GL,Z,true);
-  }else{
-    /* orizzontale (YouTube): via e voci in alto a sinistra, logo e agenzia in alto a destra, prezzo in basso a sinistra */
-    if(zone||items.length)infoCard(zone,items,TY,S,GL,1,false);
-    if(ag||logo)badgeBox(ag,TY,S,GL,1,false);
-    if(price)priceBox(price,null,S,GL,1,false);
+  /* in alto a sinistra: la via e sotto l'elenco delle voci, tutto allineato a sinistra */
+  if(zone||items.length)infoCard(zone,items,TY,S,GL);
+  /* in alto a destra: logo con il nome dell'agenzia sotto */
+  if(ag||logo){
+    const pad=18*S;let lh=100*S,lw=0;
+    if(logo){lw=logo.width/logo.height*lh;const mx=Math.min(W*.3,380*S);if(lw>mx){lw=mx;lh=lw*logo.height/logo.width}}
+    g.font=`600 ${26*S}px "Segoe UI",sans-serif`;
+    const tmax=W*.4-pad*2,tw=ag?Math.min(g.measureText(ag).width,tmax):0;
+    const bw=Math.max(lw,tw)+pad*2,bh=pad*2+(logo?lh:0)+(ag?(logo?10*S:0)+28*S:0),bx=W-40*S-bw;
+    box(GL,bx,TY,bw,bh,24*S,S);
+    let y=TY+pad;
+    if(logo){g.drawImage(logo,bx+(bw-lw)/2,y,lw,lh);y+=lh+10*S}
+    if(ag){g.fillStyle=GL?"#fff":"#ecd08a";if(GL){g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=6*S}
+      g.textAlign="center";g.textBaseline="alphabetic";g.fillText(ag,bx+bw/2,y+22*S,tmax);g.textAlign="left";g.shadowBlur=0}
   }
+  /* in basso a sinistra: il prezzo */
+  if(price){
+    const pad=24*S;fit(price,`600 #px Georgia,serif`,W-80*S-pad*2,50*S);
+    const pf=g.font,pw=g.measureText(price).width+pad*2,ph=pad*2+46*S,px=40*S,py=H-(W>H?60:340)*S-ph;
+    box(GL,px,py,pw,ph,20*S,S);
+    g.font=pf;g.textBaseline="alphabetic";g.fillStyle="#fff";if(GL){g.shadowColor="rgba(0,0,0,.4)";g.shadowBlur=6*S}
+    g.fillText(price,px+pad,py+pad+38*S);g.shadowBlur=0;
+  }
+  g.restore();
+}
+/* ===== [v3.2 NUOVO] Box informativo in ALTO AL CENTRO, font più grandi, logo più grande =====
+   Misure in px su un video 1280×720 (o 720×1280): titolo 41, prezzo 48, dettagli 29. Si scalano in proporzione alla risoluzione (k).
+   Orizzontale 16:9: box al centro in alto, logo con agenzia in alto a destra. Verticale 9:16: logo in alto a destra e, sotto, il box
+   centrato, dentro la zona sicura (sotto l'interfaccia di Instagram / TikTok / Shorts). */
+function infoBoxV32(zone,price,items,top,S,k,GL,V,limitRight){
+  const pad=22*k,lh=40*k,maxInner=Math.min(W*(V?.92:.56),1100*k)-pad*2;
+  let tw=0,pw=0,tf="",pf="";
+  if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,maxInner,41*k);tf=g.font;tw=g.measureText(zone).width}
+  if(price){fit(price,`700 #px Georgia,serif`,maxInner,48*k);pf=g.font;pw=g.measureText(price).width}
+  const side=!!(zone&&price)&&tw+pw+40*k<=maxInner,headW=side?tw+pw+40*k:Math.max(tw,pw);
+  const headH=side?60*k:(zone?52*k:0)+(price?62*k:0);
+  g.font=`500 ${29*k}px "Segoe UI",sans-serif`;
+  /* voci su più colonne per tenere il box basso: 16:9 fino a 3 colonne, 9:16 fino a 2 (si riducono se non ci stanno) */
+  let cols=V?(items.length>4?2:1):(items.length>3?3:1),rows,colW,iw;
+  const layout=()=>{rows=Math.ceil(items.length/cols);colW=[];for(let c=0;c<cols;c++){let m=0;for(let r=0;r<rows;r++){const it=items[c*rows+r];if(it)m=Math.max(m,g.measureText(it).width+26*k)}colW.push(m)}iw=colW.reduce((x,y)=>x+y,0)+(cols-1)*24*k};
+  layout();while(iw>maxInner&&cols>1){cols--;layout()}
+  const gap=headH&&items.length?16*k:0,listH=items.length?rows*lh-6*k:0;
+  const bw=Math.max(headW,iw)+pad*2,bh=pad*2+headH+gap+listH;
+  let px=(W-bw)/2;if(limitRight!=null&&px+bw>limitRight)px=limitRight-bw;px=Math.max(36*k,px);
+  box(GL,px,top,bw,bh,32*k,S);
+  g.textBaseline="alphabetic";
+  const sh=()=>{if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=6*k}};
+  let y=top+pad;
+  if(side){
+    g.font=tf;g.fillStyle=GL?"#fff":"#ecd08a";sh();g.fillText(zone,px+pad,y+44*k);g.shadowBlur=0;
+    g.font=pf;g.fillStyle=GL?"#ffe29a":"#fff";sh();g.fillText(price,px+bw-pad-pw,y+46*k);g.shadowBlur=0;
+  }else{
+    if(zone){g.font=tf;g.fillStyle=GL?"#fff":"#ecd08a";sh();g.fillText(zone,px+pad,y+40*k);g.shadowBlur=0;y+=52*k}
+    if(price){g.font=pf;g.fillStyle=GL?"#ffe29a":"#fff";sh();g.fillText(price,px+pad,y+46*k);g.shadowBlur=0}
+  }
+  const yL=top+pad+headH+gap;
+  if(items.length&&headH){g.fillStyle="rgba(255,255,255,.35)";g.fillRect(px+pad,top+pad+headH+gap/2-1*k,bw-pad*2,Math.max(1,k))}
+  g.font=`500 ${29*k}px "Segoe UI",sans-serif`;
+  for(let c=0;c<cols;c++){
+    let x=px+pad;for(let q=0;q<c;q++)x+=colW[q]+24*k;
+    for(let r=0;r<rows;r++){
+      const it=items[c*rows+r];if(!it)continue;
+      g.fillStyle="#ecd08a";g.beginPath();g.arc(x+5*k,yL+r*lh+19*k,4.5*k,0,6.2832);g.fill();
+      g.fillStyle="#fff";sh();g.fillText(it,x+24*k,yL+r*lh+28*k);g.shadowBlur=0;
+    }
+  }
+  return top+bh;
+}
+function badgeBoxV32(ag,top,S,k,GL){
+  const pad=18*k;let lh=84*k,lw=0;
+  if(logo){lw=logo.width/logo.height*lh;const mx=Math.min(W*.26,340*k);if(lw>mx){lw=mx;lh=lw*logo.height/logo.width}}
+  g.font=`600 ${22*k}px "Segoe UI",sans-serif`;
+  const tmax=Math.max(lw*1.3,200*k),tw=ag?Math.min(g.measureText(ag).width,tmax):0;
+  const bw=Math.max(lw,tw)+pad*2,bh=pad*2+(logo?lh:0)+(ag?(logo?10*k:0)+26*k:0),bx=W-36*k-bw;
+  box(GL,bx,top,bw,bh,28*k,S);
+  let y=top+pad;
+  if(logo){g.drawImage(logo,bx+(bw-lw)/2,y,lw,lh);y+=lh+10*k}
+  if(ag){g.fillStyle=GL?"#fff":"#ecd08a";if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=6*k}
+    g.textAlign="center";g.textBaseline="alphabetic";g.fillText(ag,bx+bw/2,y+20*k,tmax);g.textAlign="left";g.shadowBlur=0}
+  return{bx,bw,bottom:top+bh};
+}
+function overlay(t){
+  const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass";if(a<=0)return;
+  const zone=$("#zone").value.trim(),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
+  g.save();g.globalAlpha=a;
+  let top=V?230*S:36*k,limitRight=null;
+  if(ag||logo){const b=badgeBoxV32(ag,top,S,k,GL);if(V)top=b.bottom+14*k;else limitRight=b.bx-18*k}
+  if(zone||price||items.length)infoBoxV32(zone,price,items,top,S,k,GL,V,limitRight);
   g.restore();
 }
 function endCard(t){
@@ -825,7 +885,7 @@ $("#bStop").onclick=()=>{cancel=true};
 /* ---- cruscotto ---- */
 function syncSeg(){
   document.querySelectorAll("#segfmt button").forEach(b=>b.classList.toggle("on",b.dataset.f===$("#fmt").value));
-  $("#fmtnote").textContent=$("#fmt").value==="v"?"Instagram / TikTok: le scritte si spostano in alto al centro (zona sicura) e sono più grandi, per leggersi bene sul telefono. Usa Chrome o Edge aggiornati per ottenere un file MP4: Instagram e TikTok non accettano il WebM. Per i Reels meglio restare entro 90 secondi.":"YouTube accetta MP4 e WebM. Consigliata la qualità Full HD.";
+  $("#fmtnote").textContent=$("#fmt").value==="v"?"Instagram / TikTok / Shorts (9:16): le scritte stanno in alto al centro, nella zona sicura sotto l'interfaccia dell'app. Usa Chrome o Edge aggiornati per ottenere un file MP4: queste app non accettano il WebM. Per i Reels meglio restare entro 90 secondi.":"YouTube / Immobiliare.it (16:9): formato standard, compatibile con il player delle schede. Consigliata la qualità Full HD.";
 }
 document.querySelectorAll("#segfmt button").forEach(b=>b.onclick=()=>{$("#fmt").value=b.dataset.f;$("#fmt").dispatchEvent(new Event("change"))});
 $("#fmt").addEventListener("change",syncSeg);syncSeg();
@@ -839,7 +899,7 @@ function updChips(){
   c.push([ok?"ok":"no","Stato",ok?"pronto: premi «Crea video» (punto 6)":"manca "+(!aSrc.url?"il video (punto 1)":"")+(!aSrc.url&&!musicBuf?" e ":"")+(!musicBuf?"la musica (punto 2)":"")]);
   c.push([aSrc.url?"ok":"no","Video",aSrc.url?aSrc.name+" · "+Math.round(aSrc.dur)+" s":"da scegliere"]);
   c.push([musicBuf?"ok":"no","Musica",musicBuf?(curSong?curSong.name+" · "+($("#abpm").value||0)+" BPM":$("#mname").textContent):"da scegliere"]);
-  c.push(["ok","Formato",$("#fmt").value==="v"?"Instagram / TikTok 9:16":"YouTube 16:9"]);
+  c.push(["ok","Formato",$("#fmt").value==="v"?"Instagram / TikTok / Shorts 9:16":"YouTube 16:9"]);
   c.push([ec?"ok":"no","Cartello",ec?"attivo · "+($("#fmt").value==="v"?"9:16":"16:9")+" · "+$("#pdur").value+" s":"spento"]);
   $("#chips").innerHTML=c.map(x=>'<span class="chip '+x[0]+'"><b>'+x[1]+'</b>'+esc(x[2])+'</span>').join("");
 }
@@ -853,7 +913,7 @@ function showTab(t){
 function rvRefresh(){
   const el=$("#rvsel");el.innerHTML="";
   [...rvs].reverse().forEach(v=>{const o=document.createElement("option");o.value=v.id;
-    o.textContent="Video "+v.n+" · "+(v.fmt==="v"?"Instagram / TikTok 9:16":"YouTube 16:9")+" · "+Math.round(v.dur)+" s · "+new Date(v.ts).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});el.appendChild(o)});
+    o.textContent="Video "+v.n+" · "+(v.fmt==="v"?"Instagram / TikTok / Shorts 9:16":"YouTube 16:9")+" · "+Math.round(v.dur)+" s · "+new Date(v.ts).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});el.appendChild(o)});
   $("#tabRev").disabled=!rvs.length;
 }
 function showVideo(id){
@@ -882,6 +942,12 @@ $("#rvdel").onclick=async()=>{
   rvRefresh();if(rvs.length)showVideo(rvs[rvs.length-1].id);else{showTab("live");idle()}
 };
 idbDo("readonly",s=>s.getAll(),"videos").then(L=>{rvs=(L||[]).sort((a,b)=>a.ts-b.ts);rvRefresh();if(rvs.length)$("#rvinfo").textContent="Si conservano gli ultimi 5 video, anche dopo la chiusura della pagina."}).catch(()=>{});
+/* ===== [v3.2 NUOVO] Risoluzione di uscita e zona sicura in base al formato scelto ===== */
+function updRes(){
+  const q=+$("#q").value,v=$("#fmt").value==="v",w=v?q:Math.round(q*16/9),h=v?Math.round(q*16/9):q;
+  $("#fmtres").textContent="Uscita: "+w+" × "+h+" px ("+(v?"9:16 verticale":"16:9 orizzontale")+"). Le scritte si adattano da sole alla zona sicura del formato.";
+}
+$("#fmt").addEventListener("change",updRes);$("#q").addEventListener("change",updRes);updRes();
 idle();
 </script>
 </body>
