@@ -2,9 +2,11 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.3 — 28/10/2026
-     v3.2 → v3.3: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
-     NOVITÀ v2.9 → v3.3 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.5 — 28/10/2026
+     v3.4 → v3.5: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
+     v3.3 → v3.5: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
+     v3.2 → v3.5: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.5 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -32,7 +34,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.3</title>
+<title>Video Studio Immobiliare v3.5</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -333,7 +335,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.3";
+const VERSION="3.5";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -733,13 +735,55 @@ function badgeBoxV32(ag,top,S,k,GL){
     g.textAlign="center";g.textBaseline="alphabetic";g.fillText(ag,bx+bw/2,y+20*k,tmax);g.textAlign="left";g.shadowBlur=0}
   return{bx,bw,bottom:top+bh};
 }
+
+/* [v3.4 NUOVO] Plancia in basso: riga 1 = via + prezzo, riga 2 = tutti i dettagli in fila */
+function infoBoxV34(zone,price,items,S,k,GL,V){
+  const pad=22*k,maxInner=W*(V?.92:.84)-pad*2,sh=()=>{if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=6*k}};
+  let tw=0,pw=0,tf="",pf="",df="",dt="",dw=0;
+  if(price){fit(price,`700 #px Georgia,serif`,maxInner*.4,46*k);pf=g.font;pw=g.measureText(price).width}
+  if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,maxInner-(pw?pw+30*k:0),40*k);tf=g.font;tw=g.measureText(zone).width}
+  if(items.length){dt=items.join("   •   ");fit(dt,`500 #px "Segoe UI",sans-serif`,maxInner,29*k);df=g.font;dw=g.measureText(dt).width}
+  const l1=(zone||price)?1:0,l2=items.length?1:0,h1=l1?58*k:0,h2=l2?40*k:0,gap=l1&&l2?14*k:0;
+  const bw=Math.max(l1?tw+pw+(tw&&pw?30*k:0):0,dw)+pad*2,bh=pad*2+h1+gap+h2;
+  const px=(W-bw)/2,bottom=V?H*.80:H-44*k,top=bottom-bh;
+  box(GL,px,top,bw,bh,30*k,S);g.textBaseline="alphabetic";
+  let y=top+pad;
+  if(l1){
+    if(zone){g.font=tf;g.fillStyle=GL?"#fff":"#ecd08a";sh();g.fillText(zone,px+pad,y+42*k);g.shadowBlur=0}
+    if(price){g.font=pf;g.fillStyle=GL?"#ffe29a":"#fff";sh();g.fillText(price,px+bw-pad-pw,y+44*k);g.shadowBlur=0}
+    y+=h1+gap;
+    if(l2){g.fillStyle="rgba(255,255,255,.35)";g.fillRect(px+pad,y-gap/2-1*k,bw-pad*2,Math.max(1,k))}
+  }
+  if(l2){g.font=df;g.fillStyle="#fff";sh();g.fillText(dt,px+(bw-dw)/2,y+30*k);g.shadowBlur=0}
+}
+
+/* [v3.5 NUOVO] BANDA stretta a tutta larghezza in basso: riga 1 = via + prezzo, riga 2 = caratteristiche */
+function infoBandV35(zone,price,items,S,k,GL,V){
+  const mx=40*k,inner=W-mx*2,sh=()=>{if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=5*k}};
+  let pw=0,tf="",pf="",df="",dt="";
+  if(price){fit(price,`700 #px Georgia,serif`,inner*.34,34*k);pf=g.font;pw=g.measureText(price).width}
+  if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,inner-(pw?pw+24*k:0),34*k);tf=g.font}
+  if(items.length){dt=items.join("   •   ");fit(dt,`500 #px "Segoe UI",sans-serif`,inner,25*k);df=g.font}
+  const l1=!!(zone||price),l2=items.length>0,h1=l1?40*k:0,h2=l2?32*k:0,gap=l1&&l2?6*k:0,pad=14*k;
+  const bh=pad*2+h1+gap+h2,bottom=V?H*.84:H,top=bottom-bh;
+  box(GL,0,top,W,bh,0,S);
+  g.save();g.fillStyle="rgba(201,162,75,.9)";g.fillRect(0,top,W,Math.max(2,3*k));g.restore();
+  g.textBaseline="alphabetic";g.textAlign="left";
+  let y=top+pad;
+  if(l1){
+    if(zone){g.font=tf;g.fillStyle="#fff";sh();g.fillText(zone,mx,y+32*k);g.shadowBlur=0}
+    if(price){g.font=pf;g.fillStyle="#ffe29a";sh();g.fillText(price,W-mx-pw,y+32*k);g.shadowBlur=0}
+    y+=h1+gap;
+  }
+  if(l2){g.font=df;g.fillStyle="#ecd08a";sh();g.fillText(dt,mx,y+25*k);g.shadowBlur=0}
+}
 function overlay(t){
   const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass";if(a<=0)return;
   const zone=$("#zone").value.trim(),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
   g.save();g.globalAlpha=a;
   let top=V?230*S:36*k,limitRight=null;
-  if(ag||logo){const b=badgeBoxV32(ag,top,S,k,GL);if(V)top=b.bottom+14*k;else limitRight=b.bx-18*k}
-  if(zone||price||items.length)infoBoxV32(zone,price,items,top,S,k,GL,V,limitRight);
+  if(ag||logo)badgeBoxV32(ag,top,S,k,GL);
+  if(zone||price||items.length)infoBandV35(zone,price,items,S,k,GL,V);
   g.restore();
 }
 function endCard(t){
@@ -917,8 +961,8 @@ async function offline(){
   try{
     const q=+$("#q").value;if($("#fmt").value==="h"){H=q;W=Math.round(H*16/9)}else{W=q;H=Math.round(W*16/9)}
     W&=~1;H&=~1;cv.width=W;cv.height=H;g.textAlign="left";cv.style.aspectRatio=W+"/"+H;pcv.width=ncv.width=W;pcv.height=ncv.height=H;pcvOK=false;
-    SP=speed();const FPS=30,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
-    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:q>=1080?10e6:6e6,framerate:FPS,avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
+    g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";SP=speed();const FPS=30,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
+    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:Math.round(W*H*FPS*0.28),framerate:FPS,latencyMode:"quality",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
     if(!(await VideoEncoder.isConfigSupported(vc)).supported||(hasA&&!(await AudioEncoder.isConfigSupported(ac)).supported)){fallback=true;throw new Error("no")}
     const S=[];let vd=null,ad=null,n=0,failed=null;
     const venc=new VideoEncoder({output:(ch,m)=>{if(!vd&&m&&m.decoderConfig&&m.decoderConfig.description)vd=toU8(m.decoderConfig.description);const d=new Uint8Array(ch.byteLength);ch.copyTo(d);S.push({v:1,d,ts:ch.timestamp,k:ch.type==="key"})},error:e=>{failed=e}});
