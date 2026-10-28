@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- VIDEO STUDIO IMMOBILIARE — versione 3.9 — 28/10/2026
-     v3.8 → v3.9: [v3.9 NUOVO] 30 fps predefiniti, bitrate normale (prima troppo alto, file pesante da riprodurre); anteprima sempre leggera; niente cambi automatici di qualità.
+     v3.8 → v3.9: [v3.9 NUOVO] codifica senza fotogrammi B (MP4 sicuro su ogni lettore) + controllo anti-blocco con rilettura automatica e rapporto dei punti fermi.
      v3.7 → v3.9: [v3.8 NUOVO] pulsante/rilevamento "PC lento" (30 fps, HD, anteprima senza vetro sfocato).
      v3.6 → v3.9: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
      v3.5 → v3.9: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
@@ -234,7 +234,7 @@ canvas{border:var(--aq-bd)}
     <div class="grid2">
       <label>Qualità<select id="q"><option value="1080">Alta (Full HD)</option><option value="720">Standard (HD, più leggero)</option></select></label>
       <label>Se il video ha un altro formato<select id="fitm"><option value="auto">Automatico: immagine intera con sfondo sfocato</option><option value="fit">Sempre immagine intera con sfondo sfocato</option><option value="fill">Riempi lo schermo (taglia i lati)</option></select></label>
-      <label>Fluidità del filmato<select id="fps"><option value="30" selected>Standard · 30 fotogrammi al secondo (consigliata: va su tutti i dispositivi)</option><option value="60">Massima · 60 fotogrammi al secondo (file pesante, non per tutti i telefoni/PC)</option></select></label>
+      <label>Fluidità del filmato<select id="fps"><option value="60" selected>Massima · 60 fotogrammi al secondo (consigliata)</option><option value="30">Standard · 30 fotogrammi al secondo (file più leggero)</option></select></label>
       <label>Velocità del video<select id="spd"><option value="1.5">1 · Lenta (1,5×)</option><option value="2" selected>2 · Media (2×)</option><option value="3">3 · Veloce (3×)</option><option value="4">4 · Velocissima (4×)</option></select></label>
     </div>
     <p class="hint" id="fmtnote" style="margin-top:12px"></p>
@@ -796,7 +796,7 @@ function infoBandV35(zone,price,items,S,k,GL,V,zona){
   if(l2){g.font=df;g.fillStyle="#ecd08a";sh();g.fillText(dt,mx,y+25*k);g.shadowBlur=0}
 }
 function overlay(t){
-  const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass"&&!PREV;if(a<=0)return;
+  const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass"&&!(LITE&&PREV);if(a<=0)return;
   const zone=tc($("#zone").value.trim()),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
   g.save();g.globalAlpha=a;
   let top=V?230*S:36*k,limitRight=null;
@@ -942,15 +942,15 @@ async function run(rec){
   setTimeout(()=>{if(!running&&!$("#out").children.length)idle()},1200);
 }
 
-/* [v3.9 NUOVO] Anteprima sempre leggera (senza vetro sfocato, che è la parte più pesante); il video finale resta in Acquaglass. Il file finale è 30 fps con bitrate normale (compatibile ovunque) */
+/* [v3.8 NUOVO] Modalità PC lento: file leggero (30 fps, HD) e anteprima senza vetro sfocato (il vetro resta nel video finale) */
 var LITE=false,PREV=false;
 $("#bLite").onclick=()=>{LITE=!LITE;
-  if(LITE){$("#fps").value="30";$("#q").value="720"}else{$("#fps").value="30";$("#q").value="1080"}
+  if(LITE){$("#fps").value="30";$("#q").value="720"}else{$("#fps").value="60";$("#q").value="1080"}
   $("#bLite").textContent=LITE?"✓ Modalità PC lento attiva (tocca per disattivarla)":"PC lento: usa impostazioni leggere";
   $("#litenote").textContent=LITE?"Attiva: video finale a 30 fotogrammi e HD (leggero da riprodurre). L'anteprima usa scritte semplificate per scattare meno; nel video finale restano in Acquaglass.":"Se il video si ferma mentre la musica continua, premi qui: passa a 30 fotogrammi e HD, che anche i PC meno potenti riproducono senza scatti.";
   if(!running)idle()};
-
-
+/* PC con pochi core o poca memoria: attiva da solo */
+if((navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4)setTimeout(()=>$("#bLite").click(),0);
 /* [v3.3 NUOVO] CREAZIONE OFFLINE: fotogramma per fotogramma, nessun tempo reale => niente scatti */
 const toU8=x=>ArrayBuffer.isView(x)?new Uint8Array(x.buffer,x.byteOffset,x.byteLength).slice():new Uint8Array(x);
 function mp4(S,vd,ad,W,H,n,SR,FPS){
@@ -989,7 +989,7 @@ async function offline(){
     const q=+$("#q").value;if($("#fmt").value==="h"){H=q;W=Math.round(H*16/9)}else{W=q;H=Math.round(W*16/9)}
     W&=~1;H&=~1;cv.width=W;cv.height=H;g.textAlign="left";cv.style.aspectRatio=W+"/"+H;pcv.width=ncv.width=W;pcv.height=ncv.height=H;pcvOK=false;
     g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";SP=speed();const FPS=+$("#fps").value===30?30:60,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
-    const vc={codec:FPS===60?"avc1.64002A":"avc1.640028",width:W,height:H,bitrate:Math.round(W*H*FPS*(FPS===60?0.11:0.16)),framerate:FPS,latencyMode:"quality",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
+    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:Math.round(W*H*30*0.28*(FPS===60?1.6:1)),framerate:FPS,latencyMode:"realtime",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
     if(!(await VideoEncoder.isConfigSupported(vc)).supported||(hasA&&!(await AudioEncoder.isConfigSupported(ac)).supported)){fallback=true;throw new Error("no")}
     const S=[];let vd=null,ad=null,n=0,failed=null;
     const venc=new VideoEncoder({output:(ch,m)=>{if(!vd&&m&&m.decoderConfig&&m.decoderConfig.description)vd=toU8(m.decoderConfig.description);const d=new Uint8Array(ch.byteLength);ch.copyTo(d);S.push({v:1,d,ts:ch.timestamp,k:ch.type==="key"})},error:e=>{failed=e}});
@@ -1001,14 +1001,25 @@ async function offline(){
       if(n%8===0){const pc=Math.min(99,Math.round(n*dt/tot*100));msg("Creo il video… "+pc+"%  (puoi anche cambiare scheda)");$("#pb").style.width=pc+"%";await new Promise(r=>setTimeout(r,0))}
     };
     const seek=async tt=>{if(Math.abs(vid.currentTime-tt)<0.002&&vid.readyState>=2)return;vid.currentTime=tt;await Promise.race([once(vid,"seeked"),new Promise(r=>setTimeout(r,2500))])};
+    /* [v3.9 NUOVO] controllo anti-blocco: se il fotogramma sorgente non cambia quando dovrebbe, riprova la lettura */
+    const ck=document.createElement("canvas");ck.width=24;ck.height=14;const cx=ck.getContext("2d",{willReadFrequently:true});
+    const sig=()=>{cx.drawImage(vid,0,0,24,14);return cx.getImageData(0,0,24,14).data};
+    const same=(a,b)=>{let d=0;for(let i=0;i<a.length;i++)d+=Math.abs(a[i]-b[i]);return d<a.length*0.4};
+    let prevSig=null,prevT=-1,retried=0;const frozen=[];
     RAMP=isRamp();MG=null;GA=0;vid.pause();
     for(const c of clips){
       if(cancel)break;
       if(vid.dataset.u!==c.url){vid.dataset.u=c.url;vid.src=c.url;await once(vid,"loadeddata")}
-      const L=c.end-c.start,sp=cspd(c),cs=n*dt;let u=0;
+      const L=c.end-c.start,sp=cspd(c),cs=n*dt;let u=0;prevSig=null;
       while(u<1&&!cancel){
         const pp=RAMP?pw(u):1;GA=RAMP?clamp((pp-1)/(rk()-1),0,1)*0.5:0;
-        await seek(c.start+u*L);
+        const tt=c.start+u*L;await seek(tt);
+        let sg=sig();
+        if(prevSig&&Math.abs(tt-prevT)>=0.034){
+          let tr=0;while(same(sg,prevSig)&&tr<4&&!cancel){tr++;retried++;await new Promise(r=>setTimeout(r,40*tr));vid.currentTime=tt+0.0007*tr;await Promise.race([once(vid,"seeked"),new Promise(r=>setTimeout(r,800))]);sg=sig()}
+          if(same(sg,prevSig))frozen.push(n*dt);
+        }
+        prevSig=sg;prevT=tt;
         g.fillStyle="#000";g.fillRect(0,0,W,H);drawFrame(c,cs,n*dt);await push();
         u+=dt*sp*pp/L;
       }
@@ -1036,7 +1047,7 @@ async function offline(){
     const blob=mp4(S,vd,ad,W,H,n,SR,FPS),a=document.createElement("a");a.className="btn";a.href=URL.createObjectURL(blob);
     a.download="video_immobile_v"+VERSION+".mp4";a.textContent="Scarica il video (MP4, "+(blob.size/1048576).toFixed(1)+" MB)";$("#out").appendChild(a);
     await addCreated(blob,"mp4",dur);
-    msg("Video pronto: "+FPS+" fotogrammi al secondo fissi, senza scatti."+(hasA?" Musica inclusa.":" Nessuna musica scelta.")+(+$("#oa").value>0?" Attenzione: l'audio originale del video non è incluso in questa modalità.":""));
+    msg("Video pronto: "+FPS+" fotogrammi al secondo fissi. Controllo: "+n+" fotogrammi"+(retried?", "+retried+" riletture automatiche":"")+(frozen.length?"; possibili punti fermi a "+frozen.slice(0,6).map(x=>x.toFixed(2).replace(".",",")+" s").join(", ")+" (dimmi se li vedi)":"; nessun punto fermo trovato")+"."+(hasA?" Musica inclusa.":" Nessuna musica scelta.")+(+$("#oa").value>0?" Attenzione: l'audio originale del video non è incluso in questa modalità.":""));
   }catch(err){
     if(fallback){running=false;["bPrev","bExp"].forEach(i=>$("#"+i).disabled=false);return run(true)}
     if(!cancel)msg("Errore: "+(err&&err.message||err),true);
