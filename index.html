@@ -2,8 +2,9 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.2 — 26/10/2026
-     NOVITÀ v2.9 → v3.2 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.3 — 28/10/2026
+     v3.2 → v3.3: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.3 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -31,7 +32,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.2</title>
+<title>Video Studio Immobiliare v3.3</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -332,7 +333,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.2";
+const VERSION="3.3";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -878,9 +879,102 @@ async function run(rec){
   running=false;["bPrev","bExp"].forEach(i=>$("#"+i).disabled=false);$("#bStop").disabled=true;$("#pb").style.width="0";
   setTimeout(()=>{if(!running&&!$("#out").children.length)idle()},1200);
 }
+
+/* [v3.3 NUOVO] CREAZIONE OFFLINE: fotogramma per fotogramma, nessun tempo reale => niente scatti */
+const toU8=x=>ArrayBuffer.isView(x)?new Uint8Array(x.buffer,x.byteOffset,x.byteLength).slice():new Uint8Array(x);
+function mp4(S,vd,ad,W,H,n,SR){
+  const u32=x=>[x>>>24&255,x>>>16&255,x>>>8&255,x&255],u16=x=>[x>>8&255,x&255],str=t=>[...t].map(c=>c.charCodeAt(0)),z=k=>new Array(k).fill(0);
+  const cat=a=>{const r=[];for(const x of a)for(let i=0;i<x.length;i++)r.push(x[i]);return r};
+  const B=(t,...p)=>{const b=cat(p);return[...u32(b.length+8),...str(t),...b]};
+  const FB=(t,f,...p)=>B(t,[0,f>>16&255,f>>8&255,f&255],...p);
+  const MAT=[...u32(65536),...z(12),...u32(65536),...z(12),...u32(1073741824)];
+  S.sort((a,b)=>a.ts-b.ts);
+  const V=S.filter(x=>x.v),A=S.filter(x=>!x.v),hasA=A.length>0&&ad;
+  const dsi=ad?[5,ad.length,...ad]:[],dcd=[4,13+dsi.length,64,21,0,0,0,...u32(0),...u32(0),...dsi],es=[3,6+dcd.length,0,1,0,...dcd,6,1,2];
+  const vEnt=B("avc1",z(6),u16(1),z(16),u16(W),u16(H),u32(4718592),u32(4718592),u32(0),u16(1),z(32),u16(24),u16(65535),B("avcC",[...vd]));
+  const aEnt=B("mp4a",z(6),u16(1),z(8),u16(2),u16(16),u16(0),u16(0),u32(SR*65536),FB("esds",0,es));
+  const trak=(id,isV,L,ts,dl,dur,ent,off)=>B("trak",
+    FB("tkhd",3,u32(0),u32(0),u32(id),u32(0),u32(Math.round(n*1000/30)),z(8),u16(0),u16(0),u16(isV?0:256),u16(0),MAT,u32(isV?W*65536:0),u32(isV?H*65536:0)),
+    B("mdia",FB("mdhd",0,u32(0),u32(0),u32(ts),u32(dur),u16(21956),u16(0)),
+      FB("hdlr",0,u32(0),str(isV?"vide":"soun"),z(12),[0]),
+      B("minf",isV?FB("vmhd",1,u16(0),z(6)):FB("smhd",0,u16(0),u16(0)),B("dinf",FB("dref",0,u32(1),FB("url ",1))),
+        B("stbl",FB("stsd",0,u32(1),ent),FB("stts",0,u32(1),u32(L.length),u32(dl)),FB("stsc",0,u32(1),u32(1),u32(1),u32(1)),
+          FB("stsz",0,u32(0),u32(L.length),...L.map(x=>u32(x.d.length))),FB("stco",0,u32(L.length),...off.map(u32)),
+          ...(isV?[FB("stss",0,u32(L.filter(x=>x.k).length),...L.map((x,i)=>x.k?u32(i+1):[]))]:[])))));
+  const ftyp=B("ftyp",str("isom"),u32(512),str("isomiso2avc1mp41"));
+  const moov=off=>B("moov",FB("mvhd",0,u32(0),u32(0),u32(1000),u32(Math.round(n*1000/30)),u32(65536),u16(256),z(10),MAT,z(24),u32(3)),
+    trak(1,true,V,30000,1000,n*1000,vEnt,off.v),...(hasA?[trak(2,false,A,SR,1024,A.length*1024,aEnt,off.a)]:[]));
+  let off={v:V.map(()=>0),a:A.map(()=>0)};const m0=moov(off).length;let p=ftyp.length+m0+8;
+  off={v:[],a:[]};for(const x of S){(x.v?off.v:off.a).push(p);p+=x.d.length}
+  return new Blob([new Uint8Array(ftyp),new Uint8Array(moov(off)),new Uint8Array([...u32(p-ftyp.length-m0+0),...str("mdat")]),...S.map(x=>x.d)],{type:"video/mp4"});
+}
+async function offline(){
+  if(running)return;
+  if(!clips.length){msg("Aggiungi almeno un clip video.",true);return}
+  running=true;cancel=false;$("#out").innerHTML="";showTab("live");
+  ["bPrev","bExp"].forEach(i=>$("#"+i).disabled=true);$("#bStop").disabled=false;
+  let fallback=false;
+  try{
+    const q=+$("#q").value;if($("#fmt").value==="h"){H=q;W=Math.round(H*16/9)}else{W=q;H=Math.round(W*16/9)}
+    W&=~1;H&=~1;cv.width=W;cv.height=H;g.textAlign="left";cv.style.aspectRatio=W+"/"+H;pcv.width=ncv.width=W;pcv.height=ncv.height=H;pcvOK=false;
+    SP=speed();const FPS=30,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
+    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:q>=1080?10e6:6e6,framerate:FPS,avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
+    if(!(await VideoEncoder.isConfigSupported(vc)).supported||(hasA&&!(await AudioEncoder.isConfigSupported(ac)).supported)){fallback=true;throw new Error("no")}
+    const S=[];let vd=null,ad=null,n=0,failed=null;
+    const venc=new VideoEncoder({output:(ch,m)=>{if(!vd&&m&&m.decoderConfig&&m.decoderConfig.description)vd=toU8(m.decoderConfig.description);const d=new Uint8Array(ch.byteLength);ch.copyTo(d);S.push({v:1,d,ts:ch.timestamp,k:ch.type==="key"})},error:e=>{failed=e}});
+    venc.configure(vc);
+    const push=async()=>{
+      if(failed)throw failed;
+      const f=new VideoFrame(cv,{timestamp:Math.round(n*1e6/FPS),duration:Math.round(1e6/FPS)});venc.encode(f,{keyFrame:n%60===0});f.close();n++;
+      while(venc.encodeQueueSize>6)await new Promise(r=>setTimeout(r,4));
+      if(n%8===0){const pc=Math.min(99,Math.round(n*dt/tot*100));msg("Creo il video… "+pc+"%  (puoi anche cambiare scheda)");$("#pb").style.width=pc+"%";await new Promise(r=>setTimeout(r,0))}
+    };
+    const seek=async tt=>{if(Math.abs(vid.currentTime-tt)<0.002&&vid.readyState>=2)return;vid.currentTime=tt;await Promise.race([once(vid,"seeked"),new Promise(r=>setTimeout(r,2500))])};
+    RAMP=isRamp();MG=null;GA=0;vid.pause();
+    for(const c of clips){
+      if(cancel)break;
+      if(vid.dataset.u!==c.url){vid.dataset.u=c.url;vid.src=c.url;await once(vid,"loadeddata")}
+      const L=c.end-c.start,sp=cspd(c),cs=n*dt;let u=0;
+      while(u<1&&!cancel){
+        const pp=RAMP?pw(u):1;GA=RAMP?clamp((pp-1)/(rk()-1),0,1)*0.5:0;
+        await seek(c.start+u*L);
+        g.fillStyle="#000";g.fillRect(0,0,W,H);drawFrame(c,cs,n*dt);await push();
+        u+=dt*sp*pp/L;
+      }
+      GA=0;if($("#trs").value!=="none"){pctx.clearRect(0,0,W,H);pctx.drawImage(ncv,0,0);pcvOK=true}
+    }
+    if(hasEnd&&!cancel){const s0=n*dt;while(!cancel&&n*dt-s0<END){endCard(n*dt-s0);await push()}}
+    await venc.flush();venc.close();
+    if(cancel){msg("Interrotto.");throw new Error("stop")}
+    const dur=n*dt;
+    if(hasA){
+      msg("Preparo la musica…");
+      const oc=new OfflineAudioContext(2,Math.ceil(dur*SR),SR),gn=oc.createGain(),sr=oc.createBufferSource(),mv=$("#vol").value/100,fo=Math.min(2,dur/2);
+      sr.buffer=musicBuf;sr.loop=true;
+      if($("#achg").checked&&curSong&&curSong.bpm0)sr.playbackRate.value=clamp((+$("#abpm").value||curSong.bpm0)/curSong.bpm0,0.7,1.4);
+      gn.gain.setValueAtTime(0,0);gn.gain.linearRampToValueAtTime(mv,0.5);gn.gain.setValueAtTime(mv,Math.max(0.6,dur-fo));gn.gain.linearRampToValueAtTime(0,dur);
+      sr.connect(gn);gn.connect(oc.destination);sr.start(0,clamp(+$("#moff").value||0,0,Math.max(0,musicBuf.duration-1)));
+      const ab=await oc.startRendering(),L0=ab.getChannelData(0),R0=ab.getChannelData(1);
+      const aenc=new AudioEncoder({output:(ch,m)=>{if(!ad&&m&&m.decoderConfig&&m.decoderConfig.description)ad=toU8(m.decoderConfig.description);const d=new Uint8Array(ch.byteLength);ch.copyTo(d);S.push({v:0,d,ts:ch.timestamp})},error:e=>{failed=e}});
+      aenc.configure(ac);
+      for(let i=0;i<L0.length;i+=4096){const len=Math.min(4096,L0.length-i),buf=new Float32Array(len*2);buf.set(L0.subarray(i,i+len),0);buf.set(R0.subarray(i,i+len),len);
+        const a=new AudioData({format:"f32-planar",sampleRate:SR,numberOfFrames:len,numberOfChannels:2,timestamp:Math.round(i/SR*1e6),data:buf});aenc.encode(a);a.close();}
+      await aenc.flush();aenc.close();if(failed)throw failed;
+    }
+    if(!vd)throw new Error("Codifica video non riuscita.");
+    const blob=mp4(S,vd,ad,W,H,n,SR),a=document.createElement("a");a.className="btn";a.href=URL.createObjectURL(blob);
+    a.download="video_immobile_v"+VERSION+".mp4";a.textContent="Scarica il video (MP4, "+(blob.size/1048576).toFixed(1)+" MB)";$("#out").appendChild(a);
+    await addCreated(blob,"mp4",dur);
+    msg("Video pronto: 30 fotogrammi al secondo fissi, senza scatti."+(hasA?" Musica inclusa.":" Nessuna musica scelta.")+(+$("#oa").value>0?" Attenzione: l'audio originale del video non è incluso in questa modalità.":""));
+  }catch(err){
+    if(fallback){running=false;["bPrev","bExp"].forEach(i=>$("#"+i).disabled=false);return run(true)}
+    if(!cancel)msg("Errore: "+(err&&err.message||err),true);
+  }
+  running=false;["bPrev","bExp"].forEach(i=>$("#"+i).disabled=false);$("#bStop").disabled=true;$("#pb").style.width="0";
+}
 $("#fmt").onchange=()=>{applyEnd();idle()};
 $("#bPrev").onclick=()=>run(false);
-$("#bExp").onclick=()=>run(true);
+$("#bExp").onclick=()=>{(window.VideoEncoder&&window.AudioEncoder&&window.VideoFrame&&window.AudioData)?offline():run(true)};
 $("#bStop").onclick=()=>{cancel=true};
 /* ---- cruscotto ---- */
 function syncSeg(){
