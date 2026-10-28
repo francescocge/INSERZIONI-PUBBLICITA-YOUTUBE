@@ -2,11 +2,12 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.5 — 28/10/2026
-     v3.4 → v3.5: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
-     v3.3 → v3.5: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
-     v3.2 → v3.5: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
-     NOVITÀ v2.9 → v3.5 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.6 — 28/10/2026
+     v3.5 → v3.6: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
+     v3.4 → v3.6: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
+     v3.3 → v3.6: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
+     v3.2 → v3.6: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.6 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -34,7 +35,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.5</title>
+<title>Video Studio Immobiliare v3.6</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -262,7 +263,8 @@ canvas{border:var(--aq-bd)}
       <label class="chk"><input type="checkbox" id="s_auto"> Posto auto</label>
       <label class="chk"><input type="checkbox" id="s_box"> Box</label>
       <label class="chk"><input type="checkbox" id="s_cant"> Cantina</label>
-      <label class="chk"><input type="checkbox" id="s_balc"> Balcone / terrazzo</label>
+      <label class="chk"><input type="checkbox" id="s_balc"> Balcone</label>
+      <label class="chk"><input type="checkbox" id="s_terr"> Terrazzo</label>
     </div>
     <label style="margin-top:10px">Altro (testo libero)<input type="text" id="s_altro" placeholder="es. Doppi servizi, Vista mare"></label>
     <input type="checkbox" id="fin" hidden>
@@ -335,7 +337,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.5";
+const VERSION="3.6";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -577,8 +579,14 @@ $("#fmusic").onchange=async e=>{
 $("#vol").oninput=e=>$("#volv").textContent=e.target.value;
 $("#flogo").onchange=e=>{
   const f=e.target.files[0];if(!f)return;const im=new Image();
-  im.onload=()=>{logo=im;$("#lname").textContent=f.name;idle()};im.src=URL.createObjectURL(f);
+  im.onload=()=>{logo=im;$("#lname").textContent=f.name+" (salvato)";idle();
+    /* [v3.6 NUOVO] salva l'ultimo logo nel browser (ridotto a max 700 px) */
+    try{const r=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);
+      c.getContext("2d").drawImage(im,0,0,c.width,c.height);localStorage.setItem("vsi_logo",c.toDataURL("image/png"));localStorage.setItem("vsi_logo_nome",f.name)}catch(x){}};
+  im.src=URL.createObjectURL(f);
 };
+/* [v3.6 NUOVO] ricarica l'ultimo logo all'apertura */
+try{const d=localStorage.getItem("vsi_logo");if(d){const im=new Image();im.onload=()=>{logo=im;$("#lname").textContent=(localStorage.getItem("vsi_logo_nome")||"Logo")+" (ultimo caricato — carica un altro per cambiarlo)";idle()};im.src=d}}catch(x){}
 ["zone","price","agency","contact"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(!running)idle()}));
 
 /* ---------- Disegno ---------- */
@@ -606,6 +614,9 @@ function box(GL,x,y,w,h,r,S){
   g.fillStyle="rgba(13,26,43,.6)";g.beginPath();g.roundRect(x,y,w,h,r);g.fill();
   g.strokeStyle="rgba(201,162,75,.7)";g.lineWidth=2*S;g.stroke();
 }
+/* [v3.6 NUOVO] Via/zona con l'iniziale maiuscola: "via dei mille, castelletto" -> "Via dei Mille, Castelletto" */
+function tc(x){const m=["di","del","dei","della","delle","degli","dello","da","e","a","in","al","alla","ai","con","su","per","tra","fra","dell","all","dall","nell","sull","d","l"];
+  return x.toLowerCase().replace(/(^|[\s\-'’.,\/(])([a-zàèéìòù])([a-zàèéìòù]*)/g,(a,p,c,r)=>{const w=c+r;return p+(/^[ivx]{2,}$/.test(w)?w.toUpperCase():(p===""||/[.,(]/.test(p)||!m.includes(w))?c.toUpperCase()+r:w)})}
 function schedaItems(){
   const v=id=>($("#"+id).value||"").trim(),o=[],n=id=>+v(id)>0?+v(id):0;
   if(n("s_loc"))o.push(n("s_loc")+(n("s_loc")===1?" stanza":" stanze"));
@@ -613,7 +624,8 @@ function schedaItems(){
   if(v("s_piano"))o.push("Piano "+v("s_piano"));
   if(v("s_asc")==="si")o.push("Ascensore");else if(v("s_asc")==="no")o.push("Senza ascensore");
   if(n("s_bag"))o.push(n("s_bag")+(n("s_bag")===1?" bagno":" bagni"));
-  if($("#s_balc").checked)o.push("Balcone / terrazzo");
+  if($("#s_balc").checked)o.push("Balcone");
+  if($("#s_terr").checked)o.push("Terrazzo");
   if($("#s_cant").checked)o.push("Cantina");
   if($("#s_auto").checked)o.push("Posto auto");
   if($("#s_box").checked)o.push("Box");
@@ -652,7 +664,7 @@ function infoCard(zone,items,top,S,GL){
 /* [v2.9] Layout precedente delle scritte: mantenuto invariato ma non più usato (per ripristinarlo rinomina overlayV29 in overlay). */
 function overlayV29(t){
   const S=Math.min(W,H)/1080,a=clamp((t-0.4)/0.6,0,1),TY=(W>H?50:170)*S,GL=$("#tstyle").value==="glass";if(a<=0)return;
-  const zone=$("#zone").value.trim(),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
+  const zone=tc($("#zone").value.trim()),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
   g.save();g.globalAlpha=a;
   /* in alto a sinistra: la via e sotto l'elenco delle voci, tutto allineato a sinistra */
   if(zone||items.length)infoCard(zone,items,TY,S,GL);
@@ -765,7 +777,7 @@ function infoBandV35(zone,price,items,S,k,GL,V){
   if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,inner-(pw?pw+24*k:0),34*k);tf=g.font}
   if(items.length){dt=items.join("   •   ");fit(dt,`500 #px "Segoe UI",sans-serif`,inner,25*k);df=g.font}
   const l1=!!(zone||price),l2=items.length>0,h1=l1?40*k:0,h2=l2?32*k:0,gap=l1&&l2?6*k:0,pad=14*k;
-  const bh=pad*2+h1+gap+h2,bottom=V?H*.84:H,top=bottom-bh;
+  const bh=pad*2+h1+gap+h2,bottom=V?H*.93:H,top=bottom-bh;
   box(GL,0,top,W,bh,0,S);
   g.save();g.fillStyle="rgba(201,162,75,.9)";g.fillRect(0,top,W,Math.max(2,3*k));g.restore();
   g.textBaseline="alphabetic";g.textAlign="left";
@@ -779,7 +791,7 @@ function infoBandV35(zone,price,items,S,k,GL,V){
 }
 function overlay(t){
   const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass";if(a<=0)return;
-  const zone=$("#zone").value.trim(),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
+  const zone=tc($("#zone").value.trim()),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
   g.save();g.globalAlpha=a;
   let top=V?230*S:36*k,limitRight=null;
   if(ag||logo)badgeBoxV32(ag,top,S,k,GL);
@@ -794,7 +806,7 @@ function endCard(t){
   g.save();g.globalAlpha=a;g.textAlign="center";g.textBaseline="alphabetic";
   let y=H*0.30;
   if(logo){const mw=420*S,mh=260*S,s=Math.min(mw/logo.width,mh/logo.height),w=logo.width*s,h=logo.height*s;g.drawImage(logo,(W-w)/2,y-h/2,w,h);y+=h/2+70*S}
-  const ag=$("#agency").value.trim(),zone=$("#zone").value.trim(),price=$("#price").value.trim(),ct=$("#contact").value.trim();
+  const ag=$("#agency").value.trim(),zone=tc($("#zone").value.trim()),price=$("#price").value.trim(),ct=$("#contact").value.trim();
   if(ag){g.fillStyle="#ecd08a";fit(ag,`600 #px Georgia,serif`,W-140*S,64*S);g.fillText(ag,W/2,y);y+=60*S}
   g.fillStyle="#c9a24b";g.fillRect(W/2-90*S,y,180*S,4*S);y+=110*S;
   if(zone){g.fillStyle="#9fb0c4";fit(zone,`500 #px "Segoe UI",sans-serif`,W-140*S,38*S);g.fillText(zone,W/2,y);y+=120*S}
@@ -1030,7 +1042,7 @@ $("#fmt").addEventListener("change",syncSeg);syncSeg();
 $("#afin").onchange=()=>{$("#fin").checked=$("#afin").checked;renderList()};
 $("#abpm").addEventListener("input",renderList);
 $("#tstyle").addEventListener("change",()=>{if(!running)idle()});
-["s_loc","s_mq","s_piano","s_bag","s_asc","s_ape","s_auto","s_box","s_cant","s_balc","s_altro"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(!running)idle()}));
+["s_loc","s_mq","s_piano","s_bag","s_asc","s_ape","s_auto","s_box","s_cant","s_balc","s_terr","s_altro"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(!running)idle()}));
 $("#bExp").addEventListener("click",()=>{let d=$("#out").closest("details");while(d){d.open=true;d=d.parentElement.closest("details")}});
 function updChips(){
   const c=[],ec=$("#afin").checked&&endImg,ok=aSrc.url&&musicBuf;
