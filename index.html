@@ -2,13 +2,15 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.7 — 28/10/2026
-     v3.6 → v3.7: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
-     v3.5 → v3.7: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
-     v3.4 → v3.7: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
-     v3.3 → v3.7: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
-     v3.2 → v3.7: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
-     NOVITÀ v2.9 → v3.7 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.9 — 28/10/2026
+     v3.8 → v3.9: [v3.9 NUOVO] 30 fps predefiniti, bitrate normale (prima troppo alto, file pesante da riprodurre); anteprima sempre leggera; niente cambi automatici di qualità.
+     v3.7 → v3.9: [v3.8 NUOVO] pulsante/rilevamento "PC lento" (30 fps, HD, anteprima senza vetro sfocato).
+     v3.6 → v3.9: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
+     v3.5 → v3.9: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
+     v3.4 → v3.9: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
+     v3.3 → v3.9: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
+     v3.2 → v3.9: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.9 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -36,7 +38,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.7</title>
+<title>Video Studio Immobiliare v3.9</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -232,10 +234,12 @@ canvas{border:var(--aq-bd)}
     <div class="grid2">
       <label>Qualità<select id="q"><option value="1080">Alta (Full HD)</option><option value="720">Standard (HD, più leggero)</option></select></label>
       <label>Se il video ha un altro formato<select id="fitm"><option value="auto">Automatico: immagine intera con sfondo sfocato</option><option value="fit">Sempre immagine intera con sfondo sfocato</option><option value="fill">Riempi lo schermo (taglia i lati)</option></select></label>
-      <label>Fluidità del filmato<select id="fps"><option value="60" selected>Massima · 60 fotogrammi al secondo (consigliata)</option><option value="30">Standard · 30 fotogrammi al secondo (file più leggero)</option></select></label>
+      <label>Fluidità del filmato<select id="fps"><option value="30" selected>Standard · 30 fotogrammi al secondo (consigliata: va su tutti i dispositivi)</option><option value="60">Massima · 60 fotogrammi al secondo (file pesante, non per tutti i telefoni/PC)</option></select></label>
       <label>Velocità del video<select id="spd"><option value="1.5">1 · Lenta (1,5×)</option><option value="2" selected>2 · Media (2×)</option><option value="3">3 · Veloce (3×)</option><option value="4">4 · Velocissima (4×)</option></select></label>
     </div>
     <p class="hint" id="fmtnote" style="margin-top:12px"></p>
+    <div class="row" style="margin-top:6px"><button class="btn sec" id="bLite" type="button">PC lento: usa impostazioni leggere</button></div>
+    <p class="hint" id="litenote">Se il video si ferma mentre la musica continua, premi qui: passa a 30 fotogrammi e HD, che anche i PC meno potenti riproducono senza scatti.</p>
     <!-- [v3.2 NUOVO] risoluzione di uscita in base al formato -->
     <p class="hint" id="fmtres"></p>
   </section>
@@ -339,7 +343,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.7";
+const VERSION="3.9";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -792,7 +796,7 @@ function infoBandV35(zone,price,items,S,k,GL,V,zona){
   if(l2){g.font=df;g.fillStyle="#ecd08a";sh();g.fillText(dt,mx,y+25*k);g.shadowBlur=0}
 }
 function overlay(t){
-  const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass";if(a<=0)return;
+  const S=Math.min(W,H)/1080,k=S*1.5,a=clamp((t-0.4)/0.6,0,1),V=W<H,GL=$("#tstyle").value==="glass"&&!PREV;if(a<=0)return;
   const zone=tc($("#zone").value.trim()),price=$("#price").value.trim(),ag=$("#agency").value.trim(),items=schedaItems();
   g.save();g.globalAlpha=a;
   let top=V?230*S:36*k,limitRight=null;
@@ -880,7 +884,7 @@ async function prepFirst(){
   g.fillStyle="#000";g.fillRect(0,0,W,H);drawFrame(c,0,0);
 }
 async function run(rec){
-  if(running)return;
+  if(running)return;PREV=!rec;
   if(!clips.length){msg("Aggiungi almeno un clip video.",true);return}
   if(rec&&!window.MediaRecorder){msg("Questo browser non supporta la registrazione. Usa Chrome o Edge.",true);return}
   running=true;cancel=false;$("#out").innerHTML="";showTab("live");
@@ -938,6 +942,15 @@ async function run(rec){
   setTimeout(()=>{if(!running&&!$("#out").children.length)idle()},1200);
 }
 
+/* [v3.9 NUOVO] Anteprima sempre leggera (senza vetro sfocato, che è la parte più pesante); il video finale resta in Acquaglass. Il file finale è 30 fps con bitrate normale (compatibile ovunque) */
+var LITE=false,PREV=false;
+$("#bLite").onclick=()=>{LITE=!LITE;
+  if(LITE){$("#fps").value="30";$("#q").value="720"}else{$("#fps").value="30";$("#q").value="1080"}
+  $("#bLite").textContent=LITE?"✓ Modalità PC lento attiva (tocca per disattivarla)":"PC lento: usa impostazioni leggere";
+  $("#litenote").textContent=LITE?"Attiva: video finale a 30 fotogrammi e HD (leggero da riprodurre). L'anteprima usa scritte semplificate per scattare meno; nel video finale restano in Acquaglass.":"Se il video si ferma mentre la musica continua, premi qui: passa a 30 fotogrammi e HD, che anche i PC meno potenti riproducono senza scatti.";
+  if(!running)idle()};
+
+
 /* [v3.3 NUOVO] CREAZIONE OFFLINE: fotogramma per fotogramma, nessun tempo reale => niente scatti */
 const toU8=x=>ArrayBuffer.isView(x)?new Uint8Array(x.buffer,x.byteOffset,x.byteLength).slice():new Uint8Array(x);
 function mp4(S,vd,ad,W,H,n,SR,FPS){
@@ -967,7 +980,7 @@ function mp4(S,vd,ad,W,H,n,SR,FPS){
   return new Blob([new Uint8Array(ftyp),new Uint8Array(moov(off)),new Uint8Array([...u32(p-ftyp.length-m0+0),...str("mdat")]),...S.map(x=>x.d)],{type:"video/mp4"});
 }
 async function offline(){
-  if(running)return;
+  if(running)return;PREV=false;
   if(!clips.length){msg("Aggiungi almeno un clip video.",true);return}
   running=true;cancel=false;$("#out").innerHTML="";showTab("live");
   ["bPrev","bExp"].forEach(i=>$("#"+i).disabled=true);$("#bStop").disabled=false;
@@ -976,7 +989,7 @@ async function offline(){
     const q=+$("#q").value;if($("#fmt").value==="h"){H=q;W=Math.round(H*16/9)}else{W=q;H=Math.round(W*16/9)}
     W&=~1;H&=~1;cv.width=W;cv.height=H;g.textAlign="left";cv.style.aspectRatio=W+"/"+H;pcv.width=ncv.width=W;pcv.height=ncv.height=H;pcvOK=false;
     g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";SP=speed();const FPS=+$("#fps").value===30?30:60,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
-    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:Math.round(W*H*30*0.28*(FPS===60?1.6:1)),framerate:FPS,latencyMode:"quality",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
+    const vc={codec:FPS===60?"avc1.64002A":"avc1.640028",width:W,height:H,bitrate:Math.round(W*H*FPS*(FPS===60?0.11:0.16)),framerate:FPS,latencyMode:"quality",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
     if(!(await VideoEncoder.isConfigSupported(vc)).supported||(hasA&&!(await AudioEncoder.isConfigSupported(ac)).supported)){fallback=true;throw new Error("no")}
     const S=[];let vd=null,ad=null,n=0,failed=null;
     const venc=new VideoEncoder({output:(ch,m)=>{if(!vd&&m&&m.decoderConfig&&m.decoderConfig.description)vd=toU8(m.decoderConfig.description);const d=new Uint8Array(ch.byteLength);ch.copyTo(d);S.push({v:1,d,ts:ch.timestamp,k:ch.type==="key"})},error:e=>{failed=e}});
