@@ -2,12 +2,13 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.6 — 28/10/2026
-     v3.5 → v3.6: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
-     v3.4 → v3.6: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
-     v3.3 → v3.6: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
-     v3.2 → v3.6: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
-     NOVITÀ v2.9 → v3.6 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.7 — 28/10/2026
+     v3.6 → v3.7: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
+     v3.5 → v3.7: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
+     v3.4 → v3.7: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
+     v3.3 → v3.7: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
+     v3.2 → v3.7: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.7 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -35,7 +36,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.6</title>
+<title>Video Studio Immobiliare v3.7</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -231,7 +232,8 @@ canvas{border:var(--aq-bd)}
     <div class="grid2">
       <label>Qualità<select id="q"><option value="1080">Alta (Full HD)</option><option value="720">Standard (HD, più leggero)</option></select></label>
       <label>Se il video ha un altro formato<select id="fitm"><option value="auto">Automatico: immagine intera con sfondo sfocato</option><option value="fit">Sempre immagine intera con sfondo sfocato</option><option value="fill">Riempi lo schermo (taglia i lati)</option></select></label>
-      <label>Fluidità del filmato<select id="fps"><option value="30">Standard · 30 fotogrammi al secondo (consigliata)</option><option value="60">Alta · 60 fotogrammi al secondo (PC potente)</option></select></label>
+      <label>Fluidità del filmato<select id="fps"><option value="60" selected>Massima · 60 fotogrammi al secondo (consigliata)</option><option value="30">Standard · 30 fotogrammi al secondo (file più leggero)</option></select></label>
+      <label>Velocità del video<select id="spd"><option value="1.5">1 · Lenta (1,5×)</option><option value="2" selected>2 · Media (2×)</option><option value="3">3 · Veloce (3×)</option><option value="4">4 · Velocissima (4×)</option></select></label>
     </div>
     <p class="hint" id="fmtnote" style="margin-top:12px"></p>
     <!-- [v3.2 NUOVO] risoluzione di uscita in base al formato -->
@@ -241,7 +243,8 @@ canvas{border:var(--aq-bd)}
   <section class="card" id="s4">
     <div class="sh"><span class="num">4</span><div><h2>Scritte, logo e scheda <span class="tag opt">facoltativo</span></h2><p class="hint">Tutto a sinistra: la via in alto con la mini scheda sotto, il prezzo in basso. In alto a destra: logo e nome dell'agenzia. Lascia vuoto ciò che non serve.</p></div></div>
     <div class="grid2">
-      <label>Via / zona<input type="text" id="zone" placeholder="Via Robino, Genova"></label>
+      <label>Via<input type="text" id="zone" placeholder="Via Robino 12"></label>
+      <label>Zona <small>(esce tutta in MAIUSCOLO)</small><input type="text" id="zona" placeholder="Sampierdarena" style="text-transform:uppercase"></label>
       <label>Prezzo<input type="text" id="price" placeholder="€ 385.000"></label>
       <label>Nome agenzia<input type="text" id="agency" placeholder="Nome agenzia"></label>
       <label>Contatto (facoltativo)<input type="text" id="contact" placeholder="Tel. 010 000000"></label>
@@ -294,7 +297,6 @@ canvas{border:var(--aq-bd)}
         <label>Stanze in una ripresa unica (per «Rileva stanze»)<input type="number" id="nroom" min="2" max="20" value="6"></label>
         <label>Ogni clip dura (s)<input type="number" id="pcd" min="0" step="0.5" value="0"></label>
         <label>Durata finale desiderata (s)<input type="number" id="tdur" min="0" step="1" value="0"></label>
-        <label>Velocità<select id="spd"><option value="1">Normale</option><option value="1.5">1,5×</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option></select></label>
         <label>Transizione<select id="trs"><option value="none">Nessuna</option><option value="fade">Dissolvenza</option><option value="slide">Scorrimento</option><option value="zoom">Zoom</option></select></label>
       </div>
       <label class="chk"><input type="checkbox" id="kb"> Zoom lento su ogni clip</label>
@@ -337,7 +339,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.6";
+const VERSION="3.7";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -587,7 +589,7 @@ $("#flogo").onchange=e=>{
 };
 /* [v3.6 NUOVO] ricarica l'ultimo logo all'apertura */
 try{const d=localStorage.getItem("vsi_logo");if(d){const im=new Image();im.onload=()=>{logo=im;$("#lname").textContent=(localStorage.getItem("vsi_logo_nome")||"Logo")+" (ultimo caricato — carica un altro per cambiarlo)";idle()};im.src=d}}catch(x){}
-["zone","price","agency","contact"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(!running)idle()}));
+["zone","zona","price","agency","contact"].forEach(id=>$("#"+id).addEventListener("input",()=>{if(!running)idle()}));
 
 /* ---------- Disegno ---------- */
 function cover(el,sw,sh){const s=Math.max(W/sw,H/sh),w=sw*s,h=sh*s;g.drawImage(el,(W-w)/2,(H-h)/2,w,h)}
@@ -770,20 +772,20 @@ function infoBoxV34(zone,price,items,S,k,GL,V){
 }
 
 /* [v3.5 NUOVO] BANDA stretta a tutta larghezza in basso: riga 1 = via + prezzo, riga 2 = caratteristiche */
-function infoBandV35(zone,price,items,S,k,GL,V){
+function infoBandV35(zone,price,items,S,k,GL,V,zona){
   const mx=40*k,inner=W-mx*2,sh=()=>{if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=5*k}};
   let pw=0,tf="",pf="",df="",dt="";
   if(price){fit(price,`700 #px Georgia,serif`,inner*.34,34*k);pf=g.font;pw=g.measureText(price).width}
-  if(zone){fit(zone,`600 #px "Segoe UI",sans-serif`,inner-(pw?pw+24*k:0),34*k);tf=g.font}
+  if(zone||zona){fit((zone||"")+(zone&&zona?"   ":"")+(zona||""),`600 #px "Segoe UI",sans-serif`,inner-(pw?pw+24*k:0),34*k);tf=g.font}
   if(items.length){dt=items.join("   •   ");fit(dt,`500 #px "Segoe UI",sans-serif`,inner,25*k);df=g.font}
-  const l1=!!(zone||price),l2=items.length>0,h1=l1?40*k:0,h2=l2?32*k:0,gap=l1&&l2?6*k:0,pad=14*k;
+  const l1=!!(zone||zona||price),l2=items.length>0,h1=l1?40*k:0,h2=l2?32*k:0,gap=l1&&l2?6*k:0,pad=14*k;
   const bh=pad*2+h1+gap+h2,bottom=V?H*.93:H,top=bottom-bh;
   box(GL,0,top,W,bh,0,S);
   g.save();g.fillStyle="rgba(201,162,75,.9)";g.fillRect(0,top,W,Math.max(2,3*k));g.restore();
   g.textBaseline="alphabetic";g.textAlign="left";
   let y=top+pad;
   if(l1){
-    if(zone){g.font=tf;g.fillStyle="#fff";sh();g.fillText(zone,mx,y+32*k);g.shadowBlur=0}
+    if(zone||zona){g.font=tf;let xx=mx;if(zone){g.fillStyle="#fff";sh();g.fillText(zone,xx,y+32*k);xx+=g.measureText(zone+"   ").width}if(zona){g.fillStyle="#ecd08a";sh();g.fillText(zona,xx,y+32*k)}g.shadowBlur=0}
     if(price){g.font=pf;g.fillStyle="#ffe29a";sh();g.fillText(price,W-mx-pw,y+32*k);g.shadowBlur=0}
     y+=h1+gap;
   }
@@ -795,7 +797,7 @@ function overlay(t){
   g.save();g.globalAlpha=a;
   let top=V?230*S:36*k,limitRight=null;
   if(ag||logo)badgeBoxV32(ag,top,S,k,GL);
-  if(zone||price||items.length)infoBandV35(zone,price,items,S,k,GL,V);
+  if(zone||price||items.length||$("#zona").value.trim())infoBandV35(zone,price,items,S,k,GL,V,$("#zona").value.trim().toUpperCase());
   g.restore();
 }
 function endCard(t){
@@ -806,7 +808,7 @@ function endCard(t){
   g.save();g.globalAlpha=a;g.textAlign="center";g.textBaseline="alphabetic";
   let y=H*0.30;
   if(logo){const mw=420*S,mh=260*S,s=Math.min(mw/logo.width,mh/logo.height),w=logo.width*s,h=logo.height*s;g.drawImage(logo,(W-w)/2,y-h/2,w,h);y+=h/2+70*S}
-  const ag=$("#agency").value.trim(),zone=tc($("#zone").value.trim()),price=$("#price").value.trim(),ct=$("#contact").value.trim();
+  const ag=$("#agency").value.trim(),zone=tc($("#zone").value.trim())+($("#zona").value.trim()?"  ·  "+$("#zona").value.trim().toUpperCase():""),price=$("#price").value.trim(),ct=$("#contact").value.trim();
   if(ag){g.fillStyle="#ecd08a";fit(ag,`600 #px Georgia,serif`,W-140*S,64*S);g.fillText(ag,W/2,y);y+=60*S}
   g.fillStyle="#c9a24b";g.fillRect(W/2-90*S,y,180*S,4*S);y+=110*S;
   if(zone){g.fillStyle="#9fb0c4";fit(zone,`500 #px "Segoe UI",sans-serif`,W-140*S,38*S);g.fillText(zone,W/2,y);y+=120*S}
@@ -938,7 +940,7 @@ async function run(rec){
 
 /* [v3.3 NUOVO] CREAZIONE OFFLINE: fotogramma per fotogramma, nessun tempo reale => niente scatti */
 const toU8=x=>ArrayBuffer.isView(x)?new Uint8Array(x.buffer,x.byteOffset,x.byteLength).slice():new Uint8Array(x);
-function mp4(S,vd,ad,W,H,n,SR){
+function mp4(S,vd,ad,W,H,n,SR,FPS){
   const u32=x=>[x>>>24&255,x>>>16&255,x>>>8&255,x&255],u16=x=>[x>>8&255,x&255],str=t=>[...t].map(c=>c.charCodeAt(0)),z=k=>new Array(k).fill(0);
   const cat=a=>{const r=[];for(const x of a)for(let i=0;i<x.length;i++)r.push(x[i]);return r};
   const B=(t,...p)=>{const b=cat(p);return[...u32(b.length+8),...str(t),...b]};
@@ -950,7 +952,7 @@ function mp4(S,vd,ad,W,H,n,SR){
   const vEnt=B("avc1",z(6),u16(1),z(16),u16(W),u16(H),u32(4718592),u32(4718592),u32(0),u16(1),z(32),u16(24),u16(65535),B("avcC",[...vd]));
   const aEnt=B("mp4a",z(6),u16(1),z(8),u16(2),u16(16),u16(0),u16(0),u32(SR*65536),FB("esds",0,es));
   const trak=(id,isV,L,ts,dl,dur,ent,off)=>B("trak",
-    FB("tkhd",3,u32(0),u32(0),u32(id),u32(0),u32(Math.round(n*1000/30)),z(8),u16(0),u16(0),u16(isV?0:256),u16(0),MAT,u32(isV?W*65536:0),u32(isV?H*65536:0)),
+    FB("tkhd",3,u32(0),u32(0),u32(id),u32(0),u32(Math.round(n*1000/FPS)),z(8),u16(0),u16(0),u16(isV?0:256),u16(0),MAT,u32(isV?W*65536:0),u32(isV?H*65536:0)),
     B("mdia",FB("mdhd",0,u32(0),u32(0),u32(ts),u32(dur),u16(21956),u16(0)),
       FB("hdlr",0,u32(0),str(isV?"vide":"soun"),z(12),[0]),
       B("minf",isV?FB("vmhd",1,u16(0),z(6)):FB("smhd",0,u16(0),u16(0)),B("dinf",FB("dref",0,u32(1),FB("url ",1))),
@@ -958,8 +960,8 @@ function mp4(S,vd,ad,W,H,n,SR){
           FB("stsz",0,u32(0),u32(L.length),...L.map(x=>u32(x.d.length))),FB("stco",0,u32(L.length),...off.map(u32)),
           ...(isV?[FB("stss",0,u32(L.filter(x=>x.k).length),...L.map((x,i)=>x.k?u32(i+1):[]))]:[])))));
   const ftyp=B("ftyp",str("isom"),u32(512),str("isomiso2avc1mp41"));
-  const moov=off=>B("moov",FB("mvhd",0,u32(0),u32(0),u32(1000),u32(Math.round(n*1000/30)),u32(65536),u16(256),z(10),MAT,z(24),u32(3)),
-    trak(1,true,V,30000,1000,n*1000,vEnt,off.v),...(hasA?[trak(2,false,A,SR,1024,A.length*1024,aEnt,off.a)]:[]));
+  const moov=off=>B("moov",FB("mvhd",0,u32(0),u32(0),u32(1000),u32(Math.round(n*1000/FPS)),u32(65536),u16(256),z(10),MAT,z(24),u32(3)),
+    trak(1,true,V,FPS*1000,1000,n*1000,vEnt,off.v),...(hasA?[trak(2,false,A,SR,1024,A.length*1024,aEnt,off.a)]:[]));
   let off={v:V.map(()=>0),a:A.map(()=>0)};const m0=moov(off).length;let p=ftyp.length+m0+8;
   off={v:[],a:[]};for(const x of S){(x.v?off.v:off.a).push(p);p+=x.d.length}
   return new Blob([new Uint8Array(ftyp),new Uint8Array(moov(off)),new Uint8Array([...u32(p-ftyp.length-m0+0),...str("mdat")]),...S.map(x=>x.d)],{type:"video/mp4"});
@@ -973,15 +975,15 @@ async function offline(){
   try{
     const q=+$("#q").value;if($("#fmt").value==="h"){H=q;W=Math.round(H*16/9)}else{W=q;H=Math.round(W*16/9)}
     W&=~1;H&=~1;cv.width=W;cv.height=H;g.textAlign="left";cv.style.aspectRatio=W+"/"+H;pcv.width=ncv.width=W;pcv.height=ncv.height=H;pcvOK=false;
-    g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";SP=speed();const FPS=30,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
-    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:Math.round(W*H*FPS*0.28),framerate:FPS,latencyMode:"quality",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
+    g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";SP=speed();const FPS=+$("#fps").value===30?30:60,dt=1/FPS,hasEnd=$("#fin").checked,tot=total(),hasA=!!musicBuf,SR=44100;
+    const vc={codec:"avc1.64002A",width:W,height:H,bitrate:Math.round(W*H*30*0.28*(FPS===60?1.6:1)),framerate:FPS,latencyMode:"quality",bitrateMode:"variable",avc:{format:"avc"}},ac={codec:"mp4a.40.2",sampleRate:SR,numberOfChannels:2,bitrate:160000};
     if(!(await VideoEncoder.isConfigSupported(vc)).supported||(hasA&&!(await AudioEncoder.isConfigSupported(ac)).supported)){fallback=true;throw new Error("no")}
     const S=[];let vd=null,ad=null,n=0,failed=null;
     const venc=new VideoEncoder({output:(ch,m)=>{if(!vd&&m&&m.decoderConfig&&m.decoderConfig.description)vd=toU8(m.decoderConfig.description);const d=new Uint8Array(ch.byteLength);ch.copyTo(d);S.push({v:1,d,ts:ch.timestamp,k:ch.type==="key"})},error:e=>{failed=e}});
     venc.configure(vc);
     const push=async()=>{
       if(failed)throw failed;
-      const f=new VideoFrame(cv,{timestamp:Math.round(n*1e6/FPS),duration:Math.round(1e6/FPS)});venc.encode(f,{keyFrame:n%60===0});f.close();n++;
+      const f=new VideoFrame(cv,{timestamp:Math.round(n*1e6/FPS),duration:Math.round(1e6/FPS)});venc.encode(f,{keyFrame:n%(FPS*2)===0});f.close();n++;
       while(venc.encodeQueueSize>6)await new Promise(r=>setTimeout(r,4));
       if(n%8===0){const pc=Math.min(99,Math.round(n*dt/tot*100));msg("Creo il video… "+pc+"%  (puoi anche cambiare scheda)");$("#pb").style.width=pc+"%";await new Promise(r=>setTimeout(r,0))}
     };
@@ -1018,10 +1020,10 @@ async function offline(){
       await aenc.flush();aenc.close();if(failed)throw failed;
     }
     if(!vd)throw new Error("Codifica video non riuscita.");
-    const blob=mp4(S,vd,ad,W,H,n,SR),a=document.createElement("a");a.className="btn";a.href=URL.createObjectURL(blob);
+    const blob=mp4(S,vd,ad,W,H,n,SR,FPS),a=document.createElement("a");a.className="btn";a.href=URL.createObjectURL(blob);
     a.download="video_immobile_v"+VERSION+".mp4";a.textContent="Scarica il video (MP4, "+(blob.size/1048576).toFixed(1)+" MB)";$("#out").appendChild(a);
     await addCreated(blob,"mp4",dur);
-    msg("Video pronto: 30 fotogrammi al secondo fissi, senza scatti."+(hasA?" Musica inclusa.":" Nessuna musica scelta.")+(+$("#oa").value>0?" Attenzione: l'audio originale del video non è incluso in questa modalità.":""));
+    msg("Video pronto: "+FPS+" fotogrammi al secondo fissi, senza scatti."+(hasA?" Musica inclusa.":" Nessuna musica scelta.")+(+$("#oa").value>0?" Attenzione: l'audio originale del video non è incluso in questa modalità.":""));
   }catch(err){
     if(fallback){running=false;["bPrev","bExp"].forEach(i=>$("#"+i).disabled=false);return run(true)}
     if(!cancel)msg("Errore: "+(err&&err.message||err),true);
