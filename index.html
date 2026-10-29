@@ -2,18 +2,19 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.12 — 29/10/2026
-     v3.11 → v3.12: [v3.12 NUOVO] banda con lati arrotondati e staccata dai bordi; "Durata finale desiderata" ora è esatta (il video si accorcia davvero).
-     v3.10 → v3.12: [v3.11 NUOVO] avviso quando il video caricato è 4K (troppo pesante).
-     v3.9 → v3.12: [v3.10 NUOVO] banda più alta e più trasparente; 30 fps predefiniti, bitrate più leggero e un fotogramma chiave al secondo (riproduzione più facile).
-     v3.8 → v3.12: [v3.9 NUOVO] codifica senza fotogrammi B (MP4 sicuro su ogni lettore) + controllo anti-blocco con rilettura automatica e rapporto dei punti fermi.
-     v3.7 → v3.12: [v3.8 NUOVO] pulsante/rilevamento "PC lento" (30 fps, HD, anteprima senza vetro sfocato).
-     v3.6 → v3.12: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
-     v3.5 → v3.12: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
-     v3.4 → v3.12: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
-     v3.3 → v3.12: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
-     v3.2 → v3.12: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
-     NOVITÀ v2.9 → v3.12 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.13 — 29/10/2026
+     v3.12 → v3.13: [v3.13 NUOVO] il pulsante grande "Crea video" ora usa il motore nuovo (fotogramma per fotogramma, durata esatta); forza accelerazione ridotta da sola se la durata è breve.
+     v3.11 → v3.13: [v3.12 NUOVO] banda con lati arrotondati e staccata dai bordi; "Durata finale desiderata" ora è esatta (il video si accorcia davvero).
+     v3.10 → v3.13: [v3.11 NUOVO] avviso quando il video caricato è 4K (troppo pesante).
+     v3.9 → v3.13: [v3.10 NUOVO] banda più alta e più trasparente; 30 fps predefiniti, bitrate più leggero e un fotogramma chiave al secondo (riproduzione più facile).
+     v3.8 → v3.13: [v3.9 NUOVO] codifica senza fotogrammi B (MP4 sicuro su ogni lettore) + controllo anti-blocco con rilettura automatica e rapporto dei punti fermi.
+     v3.7 → v3.13: [v3.8 NUOVO] pulsante/rilevamento "PC lento" (30 fps, HD, anteprima senza vetro sfocato).
+     v3.6 → v3.13: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
+     v3.5 → v3.13: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
+     v3.4 → v3.13: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
+     v3.3 → v3.13: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
+     v3.2 → v3.13: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.13 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -41,7 +42,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.12</title>
+<title>Video Studio Immobiliare v3.13</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -346,7 +347,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.12";
+const VERSION="3.13";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -388,10 +389,10 @@ function renderList(){
 function speed(){const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
 const perClip=()=>{/* [v3.12 NUOVO] durata finale desiderata: ha la precedenza e il video dura esattamente quella */const T=+$("#tdur").value||0,E=$("#fin").checked&&clips.length?END:0;if(T>E+1&&clips.length)return (T-E)/clips.length;let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
 const isRamp=()=>$("#ramp").checked&&perClip()>0;
-const rk=()=>+$("#rk").value||3,RF=0.22;
+const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3?Math.max(1.3,Math.min(s,9/avg)):s},RF=0.22;
 const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-u)/RF),2));
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
-const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0)?60:(isRamp()?8/rk():8)):speed();
+const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8)):speed();
 const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()&&perClip()>0?rampI():1);
 const total=()=>clips.reduce((a,c)=>a+clipDur(c),0)+($("#fin").checked&&clips.length?END:0);
 let aSrc={};
@@ -510,10 +511,10 @@ $("#bAuto").onclick=async()=>{
   A.textContent="1/3 Cerco i cambi stanza…";renderList();
   await detectRooms(0);
   const tgt=clamp(+$("#adur").value||30,5,600);
-  $("#pcd").value=(tgt/clips.length).toFixed(2);$("#trs").value="none";$("#kb").checked=false;renderList();
+  $("#pcd").value=((tgt-($("#fin").checked?END:0))/clips.length).toFixed(3);/* [v3.13] la durata comprende il cartello finale */$("#trs").value="none";$("#kb").checked=false;renderList();
   const sp=clips.map(cspd);
   A.textContent="2/3 "+clips.length+" stanze trovate. Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
-  await run(true);
+  await (OFFOK?offline():run(true));
   const a=$("#out a");
   if(a){A.textContent="✓ Video creato: "+clips.length+" stanze. "+lastChk+" Lo rivedi qui sopra nella scheda «Video creato»: premi play. ";A.appendChild(a.cloneNode(true))}
   else A.textContent="Non sono riuscito a creare il video. "+$("#msg").textContent;
@@ -946,7 +947,7 @@ async function run(rec){
 }
 
 /* [v3.8 NUOVO] Modalità PC lento: file leggero (30 fps, HD) e anteprima senza vetro sfocato (il vetro resta nel video finale) */
-var LITE=false,PREV=false;
+var LITE=false,PREV=false,OFFOK=!!(window.VideoEncoder&&window.AudioEncoder&&window.VideoFrame&&window.AudioData);
 $("#bLite").onclick=()=>{LITE=!LITE;
   if(LITE){$("#fps").value="30";$("#q").value="720"}else{$("#fps").value="30";$("#q").value="1080"}
   $("#bLite").textContent=LITE?"✓ Modalità PC lento attiva (tocca per disattivarla)":"PC lento: usa impostazioni leggere";
@@ -1061,7 +1062,7 @@ async function offline(){
 }
 $("#fmt").onchange=()=>{applyEnd();idle()};
 $("#bPrev").onclick=()=>run(false);
-$("#bExp").onclick=()=>{(window.VideoEncoder&&window.AudioEncoder&&window.VideoFrame&&window.AudioData)?offline():run(true)};
+$("#bExp").onclick=()=>{OFFOK?offline():run(true)};
 $("#bStop").onclick=()=>{cancel=true};
 /* ---- cruscotto ---- */
 function syncSeg(){
