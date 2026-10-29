@@ -2,7 +2,8 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.17 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.18 — 29/10/2026
+     v3.17 → v3.18: [v3.18 NUOVO] copiato il ritmo del video campione: (1) la scia di movimento (immagine fantasma ai cambi stanza) ora è SPENTA di default, con casella per riaccenderla; (2) con il motore nuovo la spinta ai cambi stanza non scende sotto 2,2× anche su riprese lunghe.
      v3.16 → v3.17: [v3.17 NUOVO] corretto: su PC i nomi delle stanze sparivano (lista troppo stretta); ora occupa tutta la larghezza e si adatta (1 o 2 colonne).
      v3.15 → v3.17: [v3.16 NUOVO] lista stanze compatta su due colonne (nomi brevi, pulsanti più piccoli).
      v3.14 → v3.17: [v3.15 NUOVO] lista stanze riordinata a righe con + e − (ordine della visita) e riga "Stanze" nel cruscotto in alto.
@@ -46,7 +47,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.17</title>
+<title>Video Studio Immobiliare v3.18</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -308,6 +309,7 @@ canvas{border:var(--aq-bd)}
       <div class="sub2">Ritmo e velocità</div>
       <div class="row" style="margin-bottom:12px"><button class="btn" id="bDyn" type="button">Imposta stile dinamico</button></div>
       <label class="chk"><input type="checkbox" id="ramp"> Accelera e rallenta al cambio di ambiente (video unico che scorre)</label>
+      <label class="chk"><input type="checkbox" id="trail"> Scia di movimento ai cambi stanza (immagine sfocata dietro; il video campione non ce l'ha)</label>
       <div class="grid2" style="margin-top:14px">
         <label>Stanze in una ripresa unica (per «Rileva stanze»)<input type="number" id="nroom" min="2" max="20" value="6"></label>
         <label>Ogni clip dura (s)<input type="number" id="pcd" min="0" step="0.5" value="0"></label>
@@ -354,7 +356,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.17";
+const VERSION="3.18";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -396,7 +398,7 @@ function renderList(){
 function speed(){const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
 const perClip=()=>{/* [v3.12 NUOVO] durata finale desiderata: ha la precedenza e il video dura esattamente quella */const T=+$("#tdur").value||0,E=$("#fin").checked&&clips.length?END:0;if(T>E+1&&clips.length)return (T-E)/clips.length;let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
 const isRamp=()=>$("#ramp").checked&&perClip()>0;
-const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3?Math.max(1.3,Math.min(s,9/avg)):s},RF=0.22;
+const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3?Math.min(s,Math.max(OFFOK?2.2:1.3,9/avg)):s},RF=0.22,TR=()=>{/* [v3.18 NUOVO] scia di movimento: 1 solo se la casella è accesa */const e=$("#trail");return e&&e.checked?1:0};
 const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-u)/RF),2));
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
 const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8)):speed();
@@ -880,7 +882,7 @@ async function playClip(c,tnow,tot){
   while(!cancel){
     if(vid.currentTime>=c.end-0.03||vid.ended)break;
     g.fillStyle="#000";g.fillRect(0,0,W,H);
-    if(RAMP){const u=clamp((vid.currentTime-c.start)/(c.end-c.start),0,1),pp=pw(u);vid.playbackRate=clamp(cspd(c)*pp,0.1,16);GA=clamp((pp-1)/(rk()-1),0,1)*0.5}else GA=0;fadeCheck(c);drawFrame(c,cs,tnow());FC++;
+    if(RAMP){const u=clamp((vid.currentTime-c.start)/(c.end-c.start),0,1),pp=pw(u);vid.playbackRate=clamp(cspd(c)*pp,0.1,16);GA=clamp((pp-1)/(rk()-1),0,1)*0.5*TR()}else GA=0;fadeCheck(c);drawFrame(c,cs,tnow());FC++;
     $("#pb").style.width=Math.min(100,tnow()/tot*100)+"%";
     await frame();
   }
@@ -1032,7 +1034,7 @@ async function offline(){
       let Ts=0,ud=0;while(ud<1&&Ts<1e6){ud+=dt*sp*(RAMP?pw(ud):1)/L;Ts++}
       const Nf=Math.max(1,Math.round(clipDur(c)*FPS)),kk=Ts/Nf;
       for(let fi=0;fi<Nf&&!cancel;fi++){
-        const pp=RAMP?pw(u):1;GA=RAMP?clamp((pp-1)/(rk()-1),0,1)*0.5:0;
+        const pp=RAMP?pw(u):1;GA=RAMP?clamp((pp-1)/(rk()-1),0,1)*0.5*TR():0;
         const tt=c.start+Math.min(u,1)*L;await seek(tt);
         let sg=sig();
         if(prevSig&&Math.abs(tt-prevT)>=0.034){
