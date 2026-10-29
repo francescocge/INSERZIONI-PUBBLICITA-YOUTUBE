@@ -2,16 +2,18 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.10 — 28/10/2026
-     v3.9 → v3.10: [v3.10 NUOVO] banda più alta e più trasparente; 30 fps predefiniti, bitrate più leggero e un fotogramma chiave al secondo (riproduzione più facile).
-     v3.8 → v3.10: [v3.9 NUOVO] codifica senza fotogrammi B (MP4 sicuro su ogni lettore) + controllo anti-blocco con rilettura automatica e rapporto dei punti fermi.
-     v3.7 → v3.10: [v3.8 NUOVO] pulsante/rilevamento "PC lento" (30 fps, HD, anteprima senza vetro sfocato).
-     v3.6 → v3.10: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
-     v3.5 → v3.10: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
-     v3.4 → v3.10: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
-     v3.3 → v3.10: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
-     v3.2 → v3.10: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
-     NOVITÀ v2.9 → v3.10 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.12 — 29/10/2026
+     v3.11 → v3.12: [v3.12 NUOVO] banda con lati arrotondati e staccata dai bordi; "Durata finale desiderata" ora è esatta (il video si accorcia davvero).
+     v3.10 → v3.12: [v3.11 NUOVO] avviso quando il video caricato è 4K (troppo pesante).
+     v3.9 → v3.12: [v3.10 NUOVO] banda più alta e più trasparente; 30 fps predefiniti, bitrate più leggero e un fotogramma chiave al secondo (riproduzione più facile).
+     v3.8 → v3.12: [v3.9 NUOVO] codifica senza fotogrammi B (MP4 sicuro su ogni lettore) + controllo anti-blocco con rilettura automatica e rapporto dei punti fermi.
+     v3.7 → v3.12: [v3.8 NUOVO] pulsante/rilevamento "PC lento" (30 fps, HD, anteprima senza vetro sfocato).
+     v3.6 → v3.12: [v3.7 NUOVO] campo Zona separato (maiuscolo) accanto alla via; video a 60 fps (predefinito) con creazione offline; 4 velocità visibili nel passo 3 (1,5× / 2× / 3× / 4×).
+     v3.5 → v3.12: [v3.6 NUOVO] via/zona con iniziali maiuscole; ultimo logo salvato nel browser; "Balcone" e "Terrazzo" separati; banda 9:16 più in basso.
+     v3.4 → v3.12: [v3.5 NUOVO] la plancia diventa una banda stretta a tutta larghezza in basso (2 righe); logo sempre in alto a destra.
+     v3.3 → v3.12: [v3.4 NUOVO] plancia informativa in basso su due righe (via + prezzo / dettagli in fila); qualità MP4 più alta (bitrate ~+75%, modalità qualità).
+     v3.2 → v3.12: [v3.3 NUOVO] "Crea video" ora costruisce il video fotogramma per fotogramma (WebCodecs + MP4), senza registrare in tempo reale: 30 fps fissi, velocità esatta, niente blocchi. Se il browser non supporta H.264/AAC torna al vecchio metodo. Anteprima invariata.
+     NOVITÀ v2.9 → v3.12 (marcate nel codice con "[v3.2 NUOVO]"): 1) stile Acquaglass sui box (interfaccia e scritte nel video); 2) box informativo in alto al centro con font più grandi e logo più grande;
      3) selettore formato: YouTube / Immobiliare.it 16:9 (predefinito) oppure Instagram / TikTok / Shorts 9:16, con risoluzione e zona sicura adattate; 4) interfaccia responsive per PC e smartphone.
      Per GitHub Pages: caricare index.html (copia identica di questo file). Nessuna dipendenza esterna.
      Modifiche v2.8 → v2.9: la via in alto a sinistra con l'elenco delle voci sotto (allineato a sinistra); "Locali" diventa "Stanze"; prezzo in basso a sinistra; logo con nome agenzia in alto a destra.
@@ -39,7 +41,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.10</title>
+<title>Video Studio Immobiliare v3.12</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -344,7 +346,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.10";
+const VERSION="3.12";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -360,7 +362,7 @@ function msg(t,err){const m=$("#msg");m.textContent=t;m.className=err?"err":""}
 $("#ver").textContent="v"+VERSION;
 
 /* ---------- Clip ---------- */
-function meta(url){return new Promise(res=>{const v=document.createElement("video");v.preload="metadata";v.onloadedmetadata=()=>res(v.duration||0);v.onerror=()=>res(0);v.src=url})}
+function meta(url){return new Promise(res=>{const v=document.createElement("video");v.preload="metadata";v.onloadedmetadata=()=>{/* [v3.11 NUOVO] avviso video pesante */if(v.videoWidth>2000||v.videoHeight>2000){try{msg("⚠ Video 4K ("+v.videoWidth+"×"+v.videoHeight+"): troppo pesante per molti PC, si può inceppare. Convertilo prima in 1080p a 30 fotogrammi (HandBrake, preset Fast 1080p30): sarà molto più fluido.",true)}catch(x){}}res(v.duration||0)};v.onerror=()=>res(0);v.src=url})}
 $("#fclips").onchange=async e=>{
   for(const f of e.target.files){
     const url=URL.createObjectURL(f),d=await meta(url);
@@ -384,12 +386,12 @@ function renderList(){
   $("#tot").textContent=clips.length?`${clips.length} clip · durata finale ${tot.toFixed(1)} s · ${perClip()>0?"ogni clip "+perClip()+" s":"velocità "+speed().toFixed(2).replace(".",",")+"×"}`:"Nessun clip caricato.";
 }
 function speed(){const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
-const perClip=()=>{let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
+const perClip=()=>{/* [v3.12 NUOVO] durata finale desiderata: ha la precedenza e il video dura esattamente quella */const T=+$("#tdur").value||0,E=$("#fin").checked&&clips.length?END:0;if(T>E+1&&clips.length)return (T-E)/clips.length;let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
 const isRamp=()=>$("#ramp").checked&&perClip()>0;
 const rk=()=>+$("#rk").value||3,RF=0.22;
 const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-u)/RF),2));
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
-const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,isRamp()?8/rk():8):speed();
+const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0)?60:(isRamp()?8/rk():8)):speed();
 const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()&&perClip()>0?rampI():1);
 const total=()=>clips.reduce((a,c)=>a+clipDur(c),0)+($("#fin").checked&&clips.length?END:0);
 let aSrc={};
@@ -779,15 +781,14 @@ function infoBoxV34(zone,price,items,S,k,GL,V){
 
 /* [v3.5 NUOVO] BANDA stretta a tutta larghezza in basso: riga 1 = via + prezzo, riga 2 = caratteristiche */
 function infoBandV35(zone,price,items,S,k,GL,V,zona){
-  const mx=40*k,inner=W-mx*2,sh=()=>{if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=5*k}};
+  const om=26*k,mx=om+32*k,inner=W-mx*2,sh=()=>{if(GL){g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=5*k}};
   let pw=0,tf="",pf="",df="",dt="";
   if(price){fit(price,`700 #px Georgia,serif`,inner*.34,34*k);pf=g.font;pw=g.measureText(price).width}
   if(zone||zona){fit((zone||"")+(zone&&zona?"   ":"")+(zona||""),`600 #px "Segoe UI",sans-serif`,inner-(pw?pw+24*k:0),34*k);tf=g.font}
   if(items.length){dt=items.join("   •   ");fit(dt,`500 #px "Segoe UI",sans-serif`,inner,25*k);df=g.font}
   const l1=!!(zone||zona||price),l2=items.length>0,h1=l1?40*k:0,h2=l2?32*k:0,gap=l1&&l2?6*k:0,pad=14*k;
   const bh=pad*2+h1+gap+h2,bottom=V?H*.86:H*.90,top=bottom-bh;
-  GLA=.38;box(GL,0,top,W,bh,0,S);GLA=.65;
-  g.save();g.fillStyle="rgba(201,162,75,.9)";g.fillRect(0,top,W,Math.max(2,3*k));g.restore();
+  GLA=.38;box(GL,om,top,W-om*2,bh,Math.min(bh/2,34*k),S);GLA=.65;
   g.textBaseline="alphabetic";g.textAlign="left";
   let y=top+pad;
   if(l1){
@@ -1013,9 +1014,11 @@ async function offline(){
       if(cancel)break;
       if(vid.dataset.u!==c.url){vid.dataset.u=c.url;vid.src=c.url;await once(vid,"loadeddata")}
       const L=c.end-c.start,sp=cspd(c),cs=n*dt;let u=0;prevSig=null;
-      while(u<1&&!cancel){
+      let Ts=0,ud=0;while(ud<1&&Ts<1e6){ud+=dt*sp*(RAMP?pw(ud):1)/L;Ts++}
+      const Nf=Math.max(1,Math.round(clipDur(c)*FPS)),kk=Ts/Nf;
+      for(let fi=0;fi<Nf&&!cancel;fi++){
         const pp=RAMP?pw(u):1;GA=RAMP?clamp((pp-1)/(rk()-1),0,1)*0.5:0;
-        const tt=c.start+u*L;await seek(tt);
+        const tt=c.start+Math.min(u,1)*L;await seek(tt);
         let sg=sig();
         if(prevSig&&Math.abs(tt-prevT)>=0.034){
           let tr=0;while(same(sg,prevSig)&&tr<4&&!cancel){tr++;retried++;await new Promise(r=>setTimeout(r,40*tr));vid.currentTime=tt+0.0007*tr;await Promise.race([once(vid,"seeked"),new Promise(r=>setTimeout(r,800))]);sg=sig()}
@@ -1023,7 +1026,7 @@ async function offline(){
         }
         prevSig=sg;prevT=tt;
         g.fillStyle="#000";g.fillRect(0,0,W,H);drawFrame(c,cs,n*dt);await push();
-        u+=dt*sp*pp/L;
+        u+=dt*sp*pp/L*kk;
       }
       GA=0;if($("#trs").value!=="none"){pctx.clearRect(0,0,W,H);pctx.drawImage(ncv,0,0);pcvOK=true}
     }
