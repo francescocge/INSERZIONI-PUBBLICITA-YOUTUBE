@@ -2,7 +2,8 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.19 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.20 — 29/10/2026
+     v3.19 → v3.20: [v3.20 NUOVO] (1) la FORZA dell'accelerazione ora cambia davvero con il motore nuovo (la v3.18 la bloccava a 2,2× su riprese lunghe); aggiunta «Fortissima»; (2) «Secondi minimi per ambiente» (default 5): se la durata finale è troppo corta la porta su da sola e lo dice; (3) casella «Video a velocità normale (1×), senza accelerazioni».
      v3.18 → v3.19: [v3.19 NUOVO] velocità di base UGUALE in tutte le stanze quando la ripresa è unica e divisa in stanze (prima ogni stanza riceveva lo stesso tempo, quindi la prima parte andava velocissima e poi rallentava). Il tempo di ogni stanza ora è proporzionale alla ripresa che contiene; durata finale sempre esatta.
      v3.17 → v3.18: [v3.18 NUOVO] copiato il ritmo del video campione: (1) la scia di movimento (immagine fantasma ai cambi stanza) ora è SPENTA di default, con casella per riaccenderla; (2) con il motore nuovo la spinta ai cambi stanza non scende sotto 2,2× anche su riprese lunghe.
      v3.16 → v3.17: [v3.17 NUOVO] corretto: su PC i nomi delle stanze sparivano (lista troppo stretta); ora occupa tutta la larghezza e si adatta (1 o 2 colonne).
@@ -48,7 +49,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.19</title>
+<title>Video Studio Immobiliare v3.20</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -218,8 +219,10 @@ canvas{border:var(--aq-bd)}
       <div class="rlist"><div class="rrow"><span>Ingresso</span><div class="stp"><button type="button" data-k="ingr" data-d="-1" aria-label="meno">−</button><b id="rcv_ingr">0</b><button type="button" data-k="ingr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_ingr" data-n="Ingresso" value="0"></div></div><div class="rrow"><span>Cucina</span><div class="stp"><button type="button" data-k="cuc" data-d="-1" aria-label="meno">−</button><b id="rcv_cuc">0</b><button type="button" data-k="cuc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cuc" data-n="Cucina" value="0"></div></div><div class="rrow"><span>Sala</span><div class="stp"><button type="button" data-k="sala" data-d="-1" aria-label="meno">−</button><b id="rcv_sala">0</b><button type="button" data-k="sala" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_sala" data-n="Sala" value="0"></div></div><div class="rrow"><span>Camere</span><div class="stp"><button type="button" data-k="cam" data-d="-1" aria-label="meno">−</button><b id="rcv_cam">0</b><button type="button" data-k="cam" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cam" data-n="Camere" value="0"></div></div><div class="rrow"><span>Bagni</span><div class="stp"><button type="button" data-k="bag" data-d="-1" aria-label="meno">−</button><b id="rcv_bag">0</b><button type="button" data-k="bag" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_bag" data-n="Bagni" value="0"></div></div><div class="rrow"><span>Balcone</span><div class="stp"><button type="button" data-k="balc" data-d="-1" aria-label="meno">−</button><b id="rcv_balc">0</b><button type="button" data-k="balc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_balc" data-n="Balcone" value="0"></div></div><div class="rrow"><span>Terrazzo</span><div class="stp"><button type="button" data-k="terr" data-d="-1" aria-label="meno">−</button><b id="rcv_terr">0</b><button type="button" data-k="terr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_terr" data-n="Terrazzo" value="0"></div></div><div class="rrow"><span>Giardino</span><div class="stp"><button type="button" data-k="giar" data-d="-1" aria-label="meno">−</button><b id="rcv_giar">0</b><button type="button" data-k="giar" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_giar" data-n="Giardino" value="0"></div></div><div class="rrow"><span>Cantina</span><div class="stp"><button type="button" data-k="cant" data-d="-1" aria-label="meno">−</button><b id="rcv_cant">0</b><button type="button" data-k="cant" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cant" data-n="Cantina" value="0"></div></div><div class="rrow"><span>Altro</span><div class="stp"><button type="button" data-k="altro" data-d="-1" aria-label="meno">−</button><b id="rcv_altro">0</b><button type="button" data-k="altro" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_altro" data-n="Altro" value="0"></div></div></div>
       <p class="rtot" id="rctot">Nessuna stanza indicata: il tool sceglie da solo.</p></div>
       <label>Numero di stanze (0 = automatico)<input type="number" id="arooms" min="0" max="20" value="0"></label>
-      <label>Forza dell'accelerazione<select id="rk"><option value="2">Leggera</option><option value="3" selected>Media</option><option value="4">Forte</option></select></label>
+      <label>Forza dell'accelerazione<select id="rk"><option value="2">Leggera</option><option value="3" selected>Media</option><option value="4">Forte</option><option value="6">Fortissima</option></select></label>
+      <label>Secondi minimi per ambiente (0 = nessun minimo)<input type="number" id="aminr" min="0" max="20" step="0.5" value="5"></label>
     </div>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="anorm"> Video a velocità normale (1×), senza accelerazioni: usa tutta la ripresa, senza cercare le stanze</label>
   </section>
 
   <section class="card" id="s2">
@@ -357,7 +360,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.19";
+const VERSION="3.20";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -399,10 +402,13 @@ function renderList(){
 function speed(){const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
 const perClip=()=>{/* [v3.12 NUOVO] durata finale desiderata: ha la precedenza e il video dura esattamente quella */const T=+$("#tdur").value||0,E=$("#fin").checked&&clips.length?END:0;if(T>E+1&&clips.length)return (T-E)/clips.length;let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
 const isRamp=()=>$("#ramp").checked&&perClip()>0;
-const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3?Math.min(s,Math.max(OFFOK?2.2:1.3,9/avg)):s},RF=0.22,TR=()=>{/* [v3.18 NUOVO] scia di movimento: 1 solo se la casella è accesa */const e=$("#trail");return e&&e.checked?1:0};
+const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3&&!OFFOK?Math.max(1.3,Math.min(s,9/avg)):s/* [v3.20] motore nuovo: nessun limite, la forza scelta vale davvero */},RF=0.22,TR=()=>{/* [v3.18 NUOVO] scia di movimento: 1 solo se la casella è accesa */const e=$("#trail");return e&&e.checked?1:0};
 const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-u)/RF),2));
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
-const cspd=c=>{/* [v3.19 NUOVO] ripresa unica divisa in stanze: stessa velocità di base per tutte (lunghezza media), così il tempo di ogni stanza è proporzionale alla ripresa che contiene */if(!(perClip()>0))return speed();const uni=isRamp()&&clips.length>1&&new Set(clips.map(x=>x.url)).size===1,L=uni?clips.reduce((a,x)=>a+x.end-x.start,0)/clips.length:(c.end-c.start);return clamp(L*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8))};
+const MINR=()=>{const e=$("#aminr");return e?Math.max(0,+e.value||0):0};
+/* [v3.20 NUOVO] tempo di ogni ambiente nel video finale: proporzionale alla ripresa, ma mai sotto il minimo scelto (somma sempre esatta) */
+const roomDurs=()=>{const N=clips.length,T=perClip()*N,m=Math.min(MINR(),T/N),L=clips.map(x=>x.end-x.start),fix=L.map(()=>false);for(let it=0;it<=N;it++){const nf=fix.filter(Boolean).length,sl=L.reduce((a,l,i)=>fix[i]?a:a+l,0);if(sl<=0)break;const k=(T-m*nf)/sl;let ch=false;L.forEach((l,i)=>{if(!fix[i]&&l*k<m-1e-9){fix[i]=true;ch=true}});if(!ch)return L.map((l,i)=>fix[i]?m:l*k)}return L.map(()=>T/N)};
+const cspd=c=>{/* [v3.19] stessa velocità di base per tutte le stanze; [v3.20] con tempo minimo per ambiente */if(!(perClip()>0))return speed();const uni=isRamp()&&clips.length>1&&new Set(clips.map(x=>x.url)).size===1,i=uni?clips.indexOf(c):-1,mx=(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8);if(i>=0)return clamp((c.end-c.start)*rampI()/roomDurs()[i],0.5,mx);return clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,mx)};
 const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()&&perClip()>0?rampI():1);
 const total=()=>clips.reduce((a,c)=>a+clipDur(c),0)+($("#fin").checked&&clips.length?END:0);
 let aSrc={};
@@ -516,14 +522,21 @@ $("#bAuto").onclick=async()=>{
   if(!aSrc.url){A.textContent="Manca il video: scegline uno al punto 1.";return}
   if(!musicBuf){A.textContent="Manca la musica: aggiungine una al punto 2.";return}
   clips=[{name:aSrc.name,url:aSrc.url,dur:aSrc.dur,start:0,end:+aSrc.dur.toFixed(1)}];
+  if($("#anorm").checked){/* [v3.20 NUOVO] velocità normale: nessuna accelerazione, nessuna ricerca stanze */
+    $("#pcd").value=0;$("#tdur").value=0;$("#ramp").checked=false;$("#fin").checked=!!endImg&&$("#afin").checked;$("#bpm").value=+$("#abpm").value||0;$("#spd").value="1";$("#trs").value="none";$("#kb").checked=false;renderList();
+    A.textContent="Velocità normale (1×): uso tutta la ripresa ("+aSrc.dur.toFixed(0)+" s). Creo il video con la musica…";
+    await (OFFOK?offline():run(true));
+    const an=$("#out a");
+    if(an){A.textContent="✓ Video creato a velocità normale. "+lastChk+" ";A.appendChild(an.cloneNode(true))}else A.textContent="Non sono riuscito a creare il video. "+$("#msg").textContent;
+    return}
   $("#pcd").value=0;$("#ramp").checked=true;$("#fin").checked=!!endImg&&$("#afin").checked;$("#bpm").value=+$("#abpm").value||0;
   $("#nroom").value=+$("#arooms").value||clamp(Math.round(aSrc.dur/6),3,14);
   A.textContent="1/3 Cerco i cambi stanza…";renderList();
   await detectRooms(0);
-  const tgt=clamp(+$("#adur").value||30,5,600);
+  let tgt=clamp(+$("#adur").value||30,5,600);const need=MINR()*clips.length+($("#fin").checked?END:0);let alz="";if(need>tgt+0.05){tgt=Math.ceil(need);alz=" Durata portata a "+tgt+" s: ogni ambiente dura almeno "+MINR()+" s (cambialo in «Secondi minimi per ambiente»). "}
   $("#pcd").value=((tgt-($("#fin").checked?END:0))/clips.length).toFixed(3);/* [v3.17] la durata comprende il cartello finale */$("#trs").value="none";$("#kb").checked=false;renderList();
   const sp=clips.map(cspd);
-  A.textContent="2/3 "+clips.length+" stanze trovate. Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
+  A.textContent="2/3 "+clips.length+" stanze trovate."+alz+" Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
   await (OFFOK?offline():run(true));
   const a=$("#out a");
   if(a){A.textContent="✓ Video creato: "+clips.length+" stanze. "+lastChk+" Lo rivedi qui sopra nella scheda «Video creato»: premi play. ";A.appendChild(a.cloneNode(true))}
