@@ -2,7 +2,8 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.18 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.19 — 29/10/2026
+     v3.18 → v3.19: [v3.19 NUOVO] velocità di base UGUALE in tutte le stanze quando la ripresa è unica e divisa in stanze (prima ogni stanza riceveva lo stesso tempo, quindi la prima parte andava velocissima e poi rallentava). Il tempo di ogni stanza ora è proporzionale alla ripresa che contiene; durata finale sempre esatta.
      v3.17 → v3.18: [v3.18 NUOVO] copiato il ritmo del video campione: (1) la scia di movimento (immagine fantasma ai cambi stanza) ora è SPENTA di default, con casella per riaccenderla; (2) con il motore nuovo la spinta ai cambi stanza non scende sotto 2,2× anche su riprese lunghe.
      v3.16 → v3.17: [v3.17 NUOVO] corretto: su PC i nomi delle stanze sparivano (lista troppo stretta); ora occupa tutta la larghezza e si adatta (1 o 2 colonne).
      v3.15 → v3.17: [v3.16 NUOVO] lista stanze compatta su due colonne (nomi brevi, pulsanti più piccoli).
@@ -47,7 +48,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.18</title>
+<title>Video Studio Immobiliare v3.19</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -356,7 +357,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.18";
+const VERSION="3.19";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -401,7 +402,7 @@ const isRamp=()=>$("#ramp").checked&&perClip()>0;
 const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3?Math.min(s,Math.max(OFFOK?2.2:1.3,9/avg)):s},RF=0.22,TR=()=>{/* [v3.18 NUOVO] scia di movimento: 1 solo se la casella è accesa */const e=$("#trail");return e&&e.checked?1:0};
 const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-u)/RF),2));
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
-const cspd=c=>perClip()>0?clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8)):speed();
+const cspd=c=>{/* [v3.19 NUOVO] ripresa unica divisa in stanze: stessa velocità di base per tutte (lunghezza media), così il tempo di ogni stanza è proporzionale alla ripresa che contiene */if(!(perClip()>0))return speed();const uni=isRamp()&&clips.length>1&&new Set(clips.map(x=>x.url)).size===1,L=uni?clips.reduce((a,x)=>a+x.end-x.start,0)/clips.length:(c.end-c.start);return clamp(L*(isRamp()?rampI():1)/perClip(),0.5,(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8))};
 const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()&&perClip()>0?rampI():1);
 const total=()=>clips.reduce((a,c)=>a+clipDur(c),0)+($("#fin").checked&&clips.length?END:0);
 let aSrc={};
