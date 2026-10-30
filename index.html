@@ -2,7 +2,8 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.21 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 3.22 — 29/10/2026
+     v3.21 → v3.22: [v3.22 NUOVO] CORRETTO errore della velocità normale: il tool scriveva «1» in un menu senza l'opzione 1×, quindi la velocità diventava 0 e il video non partiva. Ora la velocità normale vale 1× direttamente, senza passare dal menu.
      v3.20 → v3.21: [v3.21 NUOVO] «Video a velocità normale (1×)» ora è un riquadro dorato ben visibile in cima al passo 1: quando è acceso sparisce tutto il blocco acceleratore (durata, forza, minimo, lista stanze); cruscotto in alto riordinato a griglia con riquadri «Modo», «Stanze» e «Durata».
      v3.19 → v3.20: [v3.20 NUOVO] (1) la FORZA dell'accelerazione ora cambia davvero con il motore nuovo (la v3.18 la bloccava a 2,2× su riprese lunghe); aggiunta «Fortissima»; (2) «Secondi minimi per ambiente» (default 5): se la durata finale è troppo corta la porta su da sola e lo dice; (3) casella «Video a velocità normale (1×), senza accelerazioni».
      v3.18 → v3.19: [v3.19 NUOVO] velocità di base UGUALE in tutte le stanze quando la ripresa è unica e divisa in stanze (prima ogni stanza riceveva lo stesso tempo, quindi la prima parte andava velocissima e poi rallentava). Il tempo di ogni stanza ora è proporzionale alla ripresa che contiene; durata finale sempre esatta.
@@ -50,7 +51,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.21</title>
+<title>Video Studio Immobiliare v3.22</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -362,7 +363,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.21";
+const VERSION="3.22";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -401,7 +402,7 @@ function renderList(){
   const tot=total();
   $("#tot").textContent=clips.length?`${clips.length} clip · durata finale ${tot.toFixed(1)} s · ${perClip()>0?"ogni clip "+perClip()+" s":"velocità "+speed().toFixed(2).replace(".",",")+"×"}`:"Nessun clip caricato.";
 }
-function speed(){const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
+function speed(){/* [v3.22 NUOVO] velocità normale: sempre 1× */if($("#anorm")&&$("#anorm").checked)return 1;const t=+$("#tdur").value||0,s=clips.reduce((a,c)=>a+c.end-c.start,0),e=$("#fin").checked?END:0;return t>e+1&&s>0?clamp(s/(t-e),0.5,8):+$("#spd").value}
 const perClip=()=>{/* [v3.12 NUOVO] durata finale desiderata: ha la precedenza e il video dura esattamente quella */const T=+$("#tdur").value||0,E=$("#fin").checked&&clips.length?END:0;if(T>E+1&&clips.length)return (T-E)/clips.length;let d=+$("#pcd").value||0;const b=+$("#abpm").value||0;if(d>0&&b>0){const bar=240/b;d=Math.max(bar,Math.round(d/bar)*bar)}return d};
 const isRamp=()=>$("#ramp").checked&&perClip()>0;
 const rk=()=>{/* [v3.13 NUOVO] */const s=+$("#rk").value||3;if(!clips.length)return s;const pc=perClip();if(!(pc>0))return s;const avg=clips.reduce((a,c)=>a+c.end-c.start,0)/(pc*clips.length);return avg>3&&!OFFOK?Math.max(1.3,Math.min(s,9/avg)):s/* [v3.20] motore nuovo: nessun limite, la forza scelta vale davvero */},RF=0.22,TR=()=>{/* [v3.18 NUOVO] scia di movimento: 1 solo se la casella è accesa */const e=$("#trail");return e&&e.checked?1:0};
@@ -525,7 +526,7 @@ $("#bAuto").onclick=async()=>{
   if(!musicBuf){A.textContent="Manca la musica: aggiungine una al punto 2.";return}
   clips=[{name:aSrc.name,url:aSrc.url,dur:aSrc.dur,start:0,end:+aSrc.dur.toFixed(1)}];
   if($("#anorm").checked){/* [v3.20 NUOVO] velocità normale: nessuna accelerazione, nessuna ricerca stanze */
-    $("#pcd").value=0;$("#tdur").value=0;$("#ramp").checked=false;$("#fin").checked=!!endImg&&$("#afin").checked;$("#bpm").value=+$("#abpm").value||0;$("#spd").value="1";$("#trs").value="none";$("#kb").checked=false;renderList();
+    $("#pcd").value=0;$("#tdur").value=0;$("#ramp").checked=false;$("#fin").checked=!!endImg&&$("#afin").checked;$("#bpm").value=+$("#abpm").value||0;$("#trs").value="none";$("#kb").checked=false;renderList();
     A.textContent="Velocità normale (1×): uso tutta la ripresa ("+aSrc.dur.toFixed(0)+" s). Creo il video con la musica…";
     await (OFFOK?offline():run(true));
     const an=$("#out a");
