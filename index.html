@@ -2,7 +2,12 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 3.24 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 4.0 (web) — 29/10/2026
+     v3.28 → v4.0: [v4.0 NUOVO] versione per il WEB con AI. (1) Scegli video, musica e PLANIMETRIA: l’AI guarda la ripresa e la planimetria e trova da sola stanze e tagli (nessun codice da incollare); (2) il salvataggio del video funziona anche nella pagina pubblicata; (3) offline resta tutto come prima: senza AI la scheda planimetria non compare.
+     v3.27 → v3.28: [v3.28 NUOVO] campo «Codice appartamento» ben visibile nel passo 1: si incolla una sola riga (tagli + ordine delle stanze) e il tool compila da solo tagli manuali e lista stanze. Nessun altro passaggio.
+     v3.26 → v3.27: [v3.27 NUOVO] CORRETTA la ripartizione dei tempi per ambiente: il minimo non obbliga più tutte le stanze a durare uguale (prima il salone lungo correva a 4,6× e le camere corte andavano al rallentatore a 0,6×). Ora ogni stanza dura in proporzione alla ripresa che contiene, con minimo per ambiente, camere un po' più lunghe, corridoio più corto, e mai più lenta della velocità reale.
+     v3.25 → v3.26: [v3.26 NUOVO] campo «Tagli manuali (secondi)» nelle Opzioni: se lo compili, il tool NON cerca i cambi stanza da solo ma taglia esattamente dove scrivi (utile quando corridoio, camere e bagni hanno colori simili e il rilevamento automatico sbaglia). Con l'ordine delle stanze nella lista, ogni parte prende il suo tipo.
+     v3.24 → v3.25: [v3.25 NUOVO] (1) «Corridoio» nella lista stanze; (2) la lista ora ricorda l'ORDINE di visita (tocca + nell'ordine in cui le visiti): le camere restano qualche secondo in più, il corridoio meno; (3) «Velocità massima di base» (default 2×): se la ripresa è troppo lunga per la durata scelta, il tool allunga il video invece di accelerare troppo; (4) forza «Dolce» (1,5×).
      v3.23 → v3.24: [v3.24 NUOVO] musica senza pause quando ricomincia su un video lungo: casella «Togli le pause quando la musica ricomincia» (accesa di default). Il tool taglia il silenzio iniziale e la coda che sfuma e ripete solo la parte che si sente, a battute intere.
      v3.22 → v3.23: [v3.23 NUOVO] cruscotto accorciato: tornati 6 riquadri di stato (Modo, Stanze e Durata uniti in «Montaggio»), riquadri più piccoli su telefono, tolti i due titoli nel passo 1, riquadro «velocità normale» più compatto.
      v3.21 → v3.22: [v3.22 NUOVO] CORRETTO errore della velocità normale: il tool scriveva «1» in un menu senza l'opzione 1×, quindi la velocità diventava 0 e il video non partiva. Ora la velocità normale vale 1× direttamente, senza passare dal menu.
@@ -48,12 +53,13 @@
      Modifiche v1.1 → v1.2: stile dinamico (durata per clip con velocità automatica, transizioni, zoom lento, preset).
      Modifiche v1.0 → v1.1: durata finale/velocità (condensa una visita lunga), audio originale opzionale, colori più vivi, schermata finale spenta di default.
      HTML unico, offline. Unisce clip + musica + overlay (prezzo, zona, logo, agenzia) in un video verticale 9:16. -->
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style>
 <!-- [v3.2 NUOVO] metadati per GitHub Pages -->
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v3.24</title>
+<title>Video Studio Immobiliare v4.0</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -217,11 +223,21 @@ canvas{border:var(--aq-bd)}
     <div class="sh"><span class="num">1</span><div><h2>Video <span class="tag req">obbligatorio</span></h2><p class="hint">Scegli la ripresa intera della visita. Il tool trova da solo i cambi stanza e in quei punti accelera e rallenta il video. Non devi dividere nulla.</p></div></div>
     <div class="row"><label class="btn sec" for="avid">Scegli il video</label><span id="avn" class="hint" style="align-self:center;margin:0">Nessun video</span></div>
     <input type="file" id="avid" accept="video/*">
+    <div id="aibox" hidden style="margin-top:14px;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04)">
+      <b style="color:var(--gold2)">Analisi automatica con l’AI</b>
+      <p class="hint" style="margin:4px 0 10px">Scegli la planimetria (una foto o un’immagine, non un PDF). L’AI guarda la ripresa e la planimetria e trova da sola le stanze e i tagli: poi premi solo «Crea video».</p>
+      <div class="row"><label class="btn sec" for="aplan">Scegli la planimetria</label><span id="aplann" class="hint" style="align-self:center;margin:0">Nessuna planimetria</span></div>
+      <input type="file" id="aplan" accept="image/*" hidden>
+      <div class="row" style="margin-top:10px"><button type="button" class="btn sec" id="aiGo">Analizza ora (facoltativo)</button><button type="button" class="btn sec" id="aiStop" hidden>Ferma</button></div>
+      <p class="hint" id="aist" style="margin:8px 0 0"></p>
+    </div>
     <label class="normbox" id="normbox"><input type="checkbox" id="anorm"><span><b>Video a velocità normale (1×)</b><small>Senza accelerazioni: usa tutta la ripresa, senza cercare le stanze.</small></span><em>ATTIVO</em></label>
     <div id="accbox">
-      <div class="grid3" style="margin-top:14px"><label>Durata finale (secondi)<input type="number" id="adur" min="5" max="600" value="30"></label><label>Forza dell'accelerazione<select id="rk"><option value="2">Leggera</option><option value="3" selected>Media</option><option value="4">Forte</option><option value="6">Fortissima</option></select></label><label>Secondi minimi per ambiente (0 = nessun minimo)<input type="number" id="aminr" min="0" max="20" step="0.5" value="5"></label></div>
+      <div class="grid3" style="margin-top:14px"><label>Durata finale (secondi)<input type="number" id="adur" min="5" max="600" value="30"></label><label>Forza dell'accelerazione<select id="rk"><option value="1.5">Dolce</option><option value="2">Leggera</option><option value="3" selected>Media</option><option value="4">Forte</option><option value="6">Fortissima</option></select></label><label>Secondi minimi per ambiente (0 = nessun minimo)<input type="number" id="aminr" min="0" max="20" step="0.5" value="5"></label></div>
       <style>.rlist{display:grid;width:100%;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));column-gap:12px;box-sizing:border-box;border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:2px 10px;margin:6px 0;background:rgba(255,255,255,.04)}.rrow{display:flex;justify-content:space-between;align-items:center;gap:6px;min-height:38px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.10);font-size:13px}.rrow:nth-last-child(-n+2){border-bottom:0}.rrow span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stp{display:flex;align-items:center;gap:3px;flex:none}.stp b{min-width:16px;text-align:center;font-size:15px}.stp button{width:28px;height:28px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:linear-gradient(#2b4a7a,#16294a);color:#fff;font-size:18px;line-height:1;box-shadow:0 2px 0 #0b1830;cursor:pointer}.stp button:active{transform:translateY(1px);box-shadow:0 1px 0 #0b1830}.rtot{margin:6px 0 2px;padding:7px 12px;border-radius:12px;background:rgba(201,162,75,.16);border:1px solid rgba(201,162,75,.5);font-weight:600;font-size:14px}</style><div style="grid-column:1/-1;min-width:0"><div class="hint" style="margin:10px 0 2px"><b>Stanze nel video</b> (facoltativo): tocca + e − per ogni ambiente.</div>
-      <div class="rlist"><div class="rrow"><span>Ingresso</span><div class="stp"><button type="button" data-k="ingr" data-d="-1" aria-label="meno">−</button><b id="rcv_ingr">0</b><button type="button" data-k="ingr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_ingr" data-n="Ingresso" value="0"></div></div><div class="rrow"><span>Cucina</span><div class="stp"><button type="button" data-k="cuc" data-d="-1" aria-label="meno">−</button><b id="rcv_cuc">0</b><button type="button" data-k="cuc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cuc" data-n="Cucina" value="0"></div></div><div class="rrow"><span>Sala</span><div class="stp"><button type="button" data-k="sala" data-d="-1" aria-label="meno">−</button><b id="rcv_sala">0</b><button type="button" data-k="sala" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_sala" data-n="Sala" value="0"></div></div><div class="rrow"><span>Camere</span><div class="stp"><button type="button" data-k="cam" data-d="-1" aria-label="meno">−</button><b id="rcv_cam">0</b><button type="button" data-k="cam" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cam" data-n="Camere" value="0"></div></div><div class="rrow"><span>Bagni</span><div class="stp"><button type="button" data-k="bag" data-d="-1" aria-label="meno">−</button><b id="rcv_bag">0</b><button type="button" data-k="bag" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_bag" data-n="Bagni" value="0"></div></div><div class="rrow"><span>Balcone</span><div class="stp"><button type="button" data-k="balc" data-d="-1" aria-label="meno">−</button><b id="rcv_balc">0</b><button type="button" data-k="balc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_balc" data-n="Balcone" value="0"></div></div><div class="rrow"><span>Terrazzo</span><div class="stp"><button type="button" data-k="terr" data-d="-1" aria-label="meno">−</button><b id="rcv_terr">0</b><button type="button" data-k="terr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_terr" data-n="Terrazzo" value="0"></div></div><div class="rrow"><span>Giardino</span><div class="stp"><button type="button" data-k="giar" data-d="-1" aria-label="meno">−</button><b id="rcv_giar">0</b><button type="button" data-k="giar" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_giar" data-n="Giardino" value="0"></div></div><div class="rrow"><span>Cantina</span><div class="stp"><button type="button" data-k="cant" data-d="-1" aria-label="meno">−</button><b id="rcv_cant">0</b><button type="button" data-k="cant" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cant" data-n="Cantina" value="0"></div></div><div class="rrow"><span>Altro</span><div class="stp"><button type="button" data-k="altro" data-d="-1" aria-label="meno">−</button><b id="rcv_altro">0</b><button type="button" data-k="altro" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_altro" data-n="Altro" value="0"></div></div></div>
+      <label style="margin-top:14px">Codice appartamento (incolla qui la riga che ti dà Claude)<input type="text" id="acode" placeholder="TAGLI 12 22 37 … | Ingresso, Sala, Cucina …" autocomplete="off"></label><p class="hint" id="acodeok" style="margin:6px 0 0"></p>
+      <details style="margin:12px 0"><summary style="cursor:pointer;color:var(--gold2);font-weight:600">Tempi per tipo di stanza e velocità massima</summary><div class="grid3" style="margin-top:10px"><label>Velocità massima di base (×, 0 = nessun limite)<input type="number" id="acap" min="0" max="10" step="0.5" value="2"></label><label>Camere: secondi in più<input type="number" id="acam" min="0" max="15" step="0.5" value="2"></label><label>Corridoio: secondi in meno<input type="number" id="acor" min="0" max="10" step="0.5" value="2"></label></div><label style="margin-top:10px">Tagli manuali: secondi dei cambi stanza, separati da spazio (facoltativo, decimali con la virgola)<input type="text" id="acuts" placeholder="es. 12 22 37 64,5 75" inputmode="decimal"></label><p class="hint" style="margin-top:8px">Se scrivi i tagli, il tool non cerca le stanze da solo: serve una stanza in lista per ogni parte (tagli + 1). Camere e corridoio valgono solo se nella lista stanze tocchi + nell'ordine in cui le visiti. La velocità massima allunga il video se la ripresa è troppo lunga.</p></details>
+      <div class="rlist"><div class="rrow"><span>Ingresso</span><div class="stp"><button type="button" data-k="ingr" data-d="-1" aria-label="meno">−</button><b id="rcv_ingr">0</b><button type="button" data-k="ingr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_ingr" data-n="Ingresso" value="0"></div></div><div class="rrow"><span>Corridoio</span><div class="stp"><button type="button" data-k="cor" data-d="-1" aria-label="meno">−</button><b id="rcv_cor">0</b><button type="button" data-k="cor" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cor" data-n="Corridoio" value="0"></div></div><div class="rrow"><span>Cucina</span><div class="stp"><button type="button" data-k="cuc" data-d="-1" aria-label="meno">−</button><b id="rcv_cuc">0</b><button type="button" data-k="cuc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cuc" data-n="Cucina" value="0"></div></div><div class="rrow"><span>Sala</span><div class="stp"><button type="button" data-k="sala" data-d="-1" aria-label="meno">−</button><b id="rcv_sala">0</b><button type="button" data-k="sala" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_sala" data-n="Sala" value="0"></div></div><div class="rrow"><span>Camere</span><div class="stp"><button type="button" data-k="cam" data-d="-1" aria-label="meno">−</button><b id="rcv_cam">0</b><button type="button" data-k="cam" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cam" data-n="Camere" value="0"></div></div><div class="rrow"><span>Bagni</span><div class="stp"><button type="button" data-k="bag" data-d="-1" aria-label="meno">−</button><b id="rcv_bag">0</b><button type="button" data-k="bag" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_bag" data-n="Bagni" value="0"></div></div><div class="rrow"><span>Balcone</span><div class="stp"><button type="button" data-k="balc" data-d="-1" aria-label="meno">−</button><b id="rcv_balc">0</b><button type="button" data-k="balc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_balc" data-n="Balcone" value="0"></div></div><div class="rrow"><span>Terrazzo</span><div class="stp"><button type="button" data-k="terr" data-d="-1" aria-label="meno">−</button><b id="rcv_terr">0</b><button type="button" data-k="terr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_terr" data-n="Terrazzo" value="0"></div></div><div class="rrow"><span>Giardino</span><div class="stp"><button type="button" data-k="giar" data-d="-1" aria-label="meno">−</button><b id="rcv_giar">0</b><button type="button" data-k="giar" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_giar" data-n="Giardino" value="0"></div></div><div class="rrow"><span>Cantina</span><div class="stp"><button type="button" data-k="cant" data-d="-1" aria-label="meno">−</button><b id="rcv_cant">0</b><button type="button" data-k="cant" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cant" data-n="Cantina" value="0"></div></div><div class="rrow"><span>Altro</span><div class="stp"><button type="button" data-k="altro" data-d="-1" aria-label="meno">−</button><b id="rcv_altro">0</b><button type="button" data-k="altro" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_altro" data-n="Altro" value="0"></div></div></div>
       <p class="rtot" id="rctot">Nessuna stanza indicata: il tool sceglie da solo.</p></div>
       <label>Numero di stanze (0 = automatico)<input type="number" id="arooms" min="0" max="20" value="0"></label>
     </div>
@@ -364,7 +380,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="3.24";
+const VERSION="4.0";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -411,7 +427,16 @@ const pw=u=>1+(rk()-1)*(Math.pow(Math.max(0,1-u/RF),2)+Math.pow(Math.max(0,1-(1-
 const rampI=()=>{let a=0;for(let i=0;i<200;i++)a+=1/pw((i+.5)/200);return a/200};
 const MINR=()=>{const e=$("#aminr");return e?Math.max(0,+e.value||0):0};
 /* [v3.20 NUOVO] tempo di ogni ambiente nel video finale: proporzionale alla ripresa, ma mai sotto il minimo scelto (somma sempre esatta) */
-const roomDurs=()=>{const N=clips.length,T=perClip()*N,m=Math.min(MINR(),T/N),L=clips.map(x=>x.end-x.start),fix=L.map(()=>false);for(let it=0;it<=N;it++){const nf=fix.filter(Boolean).length,sl=L.reduce((a,l,i)=>fix[i]?a:a+l,0);if(sl<=0)break;const k=(T-m*nf)/sl;let ch=false;L.forEach((l,i)=>{if(!fix[i]&&l*k<m-1e-9){fix[i]=true;ch=true}});if(!ch)return L.map((l,i)=>fix[i]?m:l*k)}return L.map(()=>T/N)};
+/* [v3.25 NUOVO] camere un po' più lunghe, corridoio più corto (solo se l'ordine delle stanze è indicato) */
+const DL=c=>{const t=c&&c.type;if(t==="cam")return Math.max(0,+$("#acam").value||0);if(t==="cor")return -Math.min(Math.max(0,+$("#acor").value||0),Math.max(0,MINR()-1.5));return 0};
+const DSUM=()=>clips.reduce((a,c)=>a+DL(c),0);
+/* [v3.27] durata di ogni ambiente: proporzionale alla ripresa + camere/corridoio, con minimo, e mai più lenta del tempo reale */
+const hiD=(c,ri)=>(c.end-c.start)*ri;
+const loD=(c,ri)=>MINR()>0?Math.min(hiD(c,ri),Math.max(1.5,MINR()+DL(c))):Math.min(hiD(c,ri),0.5);
+const minTotal=()=>{const ri=rampI();return clips.reduce((a,c)=>a+loD(c,ri),0)};
+const roomDurs=()=>{const N=clips.length,T=perClip()*N,ri=rampI(),L=clips.map(c=>c.end-c.start),H=clips.map(c=>hiD(c,ri)),Lo=clips.map(c=>loD(c,ri)),Dl=clips.map(DL),sum=x=>x.reduce((p,q)=>p+q,0);
+  const f=k=>L.map((l,i)=>Math.min(H[i],Math.max(Lo[i],l*k+Dl[i])));let a=0,b=1000;if(sum(f(b))<=T)return f(b);if(sum(f(a))>=T)return f(a);
+  for(let it=0;it<60;it++){const m=(a+b)/2;if(sum(f(m))<T)a=m;else b=m}return f((a+b)/2)};
 const cspd=c=>{/* [v3.19] stessa velocità di base per tutte le stanze; [v3.20] con tempo minimo per ambiente */if(!(perClip()>0))return speed();const uni=isRamp()&&clips.length>1&&new Set(clips.map(x=>x.url)).size===1,i=uni?clips.indexOf(c):-1,mx=(+$("#tdur").value>0||OFFOK)?60:(isRamp()?8/rk():8);if(i>=0)return clamp((c.end-c.start)*rampI()/roomDurs()[i],0.5,mx);return clamp((c.end-c.start)*(isRamp()?rampI():1)/perClip(),0.5,mx)};
 const clipDur=c=>(c.end-c.start)/cspd(c)*(isRamp()&&perClip()>0?rampI():1);
 const total=()=>clips.reduce((a,c)=>a+clipDur(c),0)+($("#fin").checked&&clips.length?END:0);
@@ -546,12 +571,20 @@ $("#bAuto").onclick=async()=>{
     return}
   $("#pcd").value=0;$("#ramp").checked=true;$("#fin").checked=!!endImg&&$("#afin").checked;$("#bpm").value=+$("#abpm").value||0;
   $("#nroom").value=+$("#arooms").value||clamp(Math.round(aSrc.dur/6),3,14);
-  A.textContent="1/3 Cerco i cambi stanza…";renderList();
-  await detectRooms(0);
-  let tgt=clamp(+$("#adur").value||30,5,600);const need=MINR()*clips.length+($("#fin").checked?END:0);let alz="";if(need>tgt+0.05){tgt=Math.ceil(need);alz=" Durata portata a "+tgt+" s: ogni ambiente dura almeno "+MINR()+" s (cambialo in «Secondi minimi per ambiente»). "}
+  /* [v4.0 NUOVO] se c’è la planimetria e l’AI è disponibile, prima analizza ripresa e planimetria */
+  if(SAMPLE&&PLANF&&!($("#acuts").value||"").trim()){A.textContent="0/3 L’AI guarda la ripresa e la planimetria (da 30 secondi a 2 minuti)…";const okai=await aiAnalyze();A.textContent=okai?"0/3 ✓ L’AI ha trovato le stanze.":"0/3 "+($("#aist").textContent||"")}
+  /* [v3.26 NUOVO] tagli scritti a mano: niente ricerca automatica */
+  const mc=($("#acuts").value||"").split(/[;\s]+/).map(x=>parseFloat(x.replace(",","."))).filter(x=>isFinite(x)&&x>=1&&x<=aSrc.dur-1).sort((p,q)=>p-q).filter((x,i,ar)=>i===0||x-ar[i-1]>=1);
+  if(mc.length){A.textContent="1/3 Uso i "+mc.length+" tagli che hai scritto…";const c0=clips[0],pp=[];let s0=c0.start;for(const t of mc){pp.push({...c0,start:+s0.toFixed(1),end:+t.toFixed(1)});s0=t}pp.push({...c0,start:+s0.toFixed(1),end:c0.end});clips.splice(0,1,...pp);$("#trs").value="none";$("#kb").checked=false;renderList()}
+  else{A.textContent="1/3 Cerco i cambi stanza…";renderList();
+  await detectRooms(0)}
+  /* [v3.25 NUOVO] tipo di ogni parte dall'ordine indicato nella lista; durata alzata per il minimo per ambiente e per la velocità massima */
+  const sq=ROOMSEQ;let tn="";if(sq.length&&sq.length===clips.length)clips.forEach((c,i)=>c.type=sq[i]);else{clips.forEach(c=>{delete c.type});if(sq.length)tn=" Ordine delle stanze non applicato: trovate "+clips.length+" parti, indicate "+sq.length+"."}
+  let tgt=clamp(+$("#adur").value||30,5,600);const Ef=$("#fin").checked?END:0,need1=minTotal()+Ef,cap=+$("#acap").value||0,need2=cap>0?clips.reduce((a,c)=>a+c.end-c.start,0)*rampI()/cap+Ef:0;let alz="";
+  if(Math.max(need1,need2)>tgt+0.05){const why=need2>need1?"per non superare "+cap+"× di velocità di base":"per dare almeno "+MINR()+" s a ogni ambiente";tgt=Math.min(900,Math.ceil(Math.max(need1,need2)));alz=" Durata portata a "+tgt+" s "+why+" (li cambi in «Tempi per tipo di stanza e velocità massima»)."+tn;tn=""}
   $("#pcd").value=((tgt-($("#fin").checked?END:0))/clips.length).toFixed(3);/* [v3.17] la durata comprende il cartello finale */$("#trs").value="none";$("#kb").checked=false;renderList();
   const sp=clips.map(cspd);
-  A.textContent="2/3 "+clips.length+" stanze trovate."+alz+" Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
+  A.textContent="2/3 "+clips.length+" stanze trovate."+alz+tn+" Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
   await (OFFOK?offline():run(true));
   const a=$("#out a");
   if(a){A.textContent="✓ Video creato: "+clips.length+" stanze. "+lastChk+" Lo rivedi qui sopra nella scheda «Video creato»: premi play. ";A.appendChild(a.cloneNode(true))}
@@ -986,12 +1019,72 @@ async function run(rec){
 
 /* [v3.8 NUOVO] Modalità PC lento: file leggero (30 fps, HD) e anteprima senza vetro sfocato (il vetro resta nel video finale) */
 /* [v3.15 NUOVO] Lista stanze a righe con + e −: la somma diventa il numero di stanze da cercare */
+/* [v4.0 NUOVO] versione web: AI (guarda ripresa + planimetria) e salvataggio del video nella pagina pubblicata */
+var SAMPLE=null,DLCAP=null,PLANF=null,AIC=null;
+const BLOBS=new Map();(function(){const c=URL.createObjectURL.bind(URL);URL.createObjectURL=function(b){const u=c(b);BLOBS.set(u,b);return u}})();
+(async()=>{try{if(window.claude&&claude.use){claude.use("downloads").then(d=>{DLCAP=d}).catch(()=>{});const sm=await claude.use("sample");if(sm){SAMPLE=sm;$("#aibox").hidden=false}}}catch(e){}})();
+document.addEventListener("click",async e=>{const a=e.target&&e.target.closest?e.target.closest("a[download]"):null;if(!a||!DLCAP)return;e.preventDefault();
+  try{const b=BLOBS.get(a.href)||await (await fetch(a.href)).blob();await DLCAP.save({filename:a.download,data:b})}catch(x){if(!x||x.code!=="declined")msg("Non riesco a salvare il file: "+((x&&x.message)||x),true)}},true);
+$("#aplan").addEventListener("change",e=>{PLANF=e.target.files[0]||null;$("#aplann").textContent=PLANF?"✓ "+PLANF.name:"Nessuna planimetria"});
+async function aiSheets(S){
+  const v=document.createElement("video");v.muted=true;v.preload="auto";v.src=aSrc.url;await new Promise(r=>{v.onloadeddata=r;v.onerror=r});
+  const dur=aSrc.dur,step=Math.max(2,Math.ceil(dur/(S*20))),ts=[];for(let t=0;t<dur-0.5;t+=step)ts.push(t);
+  const per=Math.ceil(ts.length/S),cols=Math.min(5,per),rows=Math.ceil(per/cols),tw=Math.floor(1500/cols),th=Math.round(tw*(v.videoHeight||9)/(v.videoWidth||16)),out=[];
+  for(let s0=0;s0<ts.length;s0+=per){const cv=document.createElement("canvas");cv.width=cols*tw;cv.height=rows*th;const g=cv.getContext("2d");g.fillStyle="#000";g.fillRect(0,0,cv.width,cv.height);
+    const part=ts.slice(s0,s0+per);
+    for(let i=0;i<part.length;i++){v.currentTime=part[i];await Promise.race([once(v,"seeked"),new Promise(r=>setTimeout(r,1500))]);
+      const x=(i%cols)*tw,y=Math.floor(i/cols)*th;g.drawImage(v,x,y,tw,th);g.font="bold "+Math.round(tw/9)+"px sans-serif";g.lineWidth=5;g.strokeStyle="#000";g.fillStyle="#ffe14d";const lb=Math.round(part[i])+" s";g.strokeText(lb,x+8,y+Math.round(tw/9)+4);g.fillText(lb,x+8,y+Math.round(tw/9)+4);
+      $("#aist").textContent="Estraggo i fotogrammi dalla ripresa… "+Math.round((s0+i)/ts.length*100)+"%";await new Promise(r=>setTimeout(r,0))}
+    out.push(await new Promise(r=>cv.toBlob(r,"image/jpeg",0.82)))}
+  return out}
+async function aiAnalyze(){
+  const st=$("#aist"),go=$("#aiGo"),sp=$("#aiStop");
+  if(!SAMPLE){return false}
+  if(!PLANF){st.textContent="Prima scegli la planimetria.";return false}
+  if(!aSrc||!aSrc.url){st.textContent="Prima scegli il video.";return false}
+  go.disabled=true;sp.hidden=false;AIC=new AbortController();let ok=false;
+  try{
+    const lim=await SAMPLE.limits().catch(()=>null);if(!lim||!lim.images){st.textContent="Qui l’AI non può ricevere immagini: uso la ricerca automatica delle stanze.";return false}
+    const S=Math.max(1,Math.min(6,(lim.images.maxCount||6)-1)),sheets=await aiSheets(S);
+    const tipi=[...document.querySelectorAll(".rc")].map(r=>r.dataset.n).join(", ");
+    const prompt="Sei un assistente di un’agenzia immobiliare. Ricevi: (1) la PLANIMETRIA dell’appartamento (prima immagine); (2) "+sheets.length+" immagini a griglia con fotogrammi presi da UNA SOLA ripresa continua della visita (camminata con il telefono). Ogni riquadro ha scritto in giallo il secondo del video (es. «12 s»). La ripresa dura "+aSrc.dur.toFixed(1)+" secondi.\n\n"+
+    "COMPITO: ricostruisci l’ordine reale in cui la persona ha visitato gli ambienti e per ognuno indica da che secondo a che secondo è inquadrato. Usa la planimetria per capire quali ambienti esistono e come si collegano.\n\n"+
+    "REGOLE:\n- Per «stanza» usa SOLO una di queste parole: "+tipi+".\n- Salone, soggiorno e sala da pranzo = Sala. Studio = Camere. WC = Bagni. Veranda, lavanderia, ripostiglio e simili = Altro. Un corridoio è Corridoio.\n- Se un ambiente viene visitato più volte (per esempio si ripassa dal corridoio), scrivilo più volte, ognuna con i suoi secondi.\n- Le inquadrature solo di panorama dalla finestra all’inizio o alla fine fanno parte dell’ambiente vicino.\n- WC e bagno consecutivi: unisci in un solo «Bagni».\n- Ogni parte dura almeno 3 secondi: unisci i tratti più corti a quello vicino.\n- Le parti devono essere in ordine, senza buchi: la prima parte comincia a 0, ogni parte comincia dove finisce la precedente, l’ultima finisce a "+aSrc.dur.toFixed(1)+".\n- Il cambio avviene quando la camera attraversa la porta; usa i secondi dei riquadri (puoi stimare mezzi secondi).\n\n"+
+    "RISPOSTA: SOLO un oggetto JSON, nessun altro testo, in questa forma: {\"parti\":[{\"stanza\":\"Ingresso\",\"da\":0,\"a\":12},{\"stanza\":\"Sala\",\"da\":12,\"a\":22}],\"note\":\"una frase su cosa non è certo\"}";
+    st.textContent="L’AI sta guardando la ripresa e la planimetria… (da 30 secondi a 2 minuti)";
+    const r=await SAMPLE(prompt,{images:[PLANF,...sheets],modelTier:"default",cache:false,signal:AIC.signal});
+    const m=(r.text||"").match(/\{[\s\S]*\}/);if(!m)throw {code:"bad_json"};const j=JSON.parse(m[0]);
+    let parts=(j.parti||[]).map(p=>({n:String(p.stanza||"").trim(),da:+p.da,a:+p.a})).filter(p=>p.n&&isFinite(p.da)&&isFinite(p.a)).sort((x,y)=>x.da-y.da);
+    if(parts.length<2)throw {code:"bad_json"};
+    const cuts=[];for(let i=1;i<parts.length;i++){const t=Math.round(parts[i].da*2)/2;if(t>=1&&t<=aSrc.dur-1&&(!cuts.length||t-cuts[cuts.length-1]>=2))cuts.push(t);else{parts.splice(i,1);i--}}
+    if(cuts.length!==parts.length-1)throw {code:"bad_json"};
+    $("#acode").value="TAGLI "+cuts.map(x=>String(x).replace(".",",")).join(" ")+" | "+parts.map(p=>p.n).join(", ");applyCode();
+    if(!/^✓/.test($("#acodeok").textContent))throw {code:"bad_json",detail:$("#acodeok").textContent};
+    const b=[0,...cuts,aSrc.dur];st.textContent="✓ Fatto: "+parts.map((p,i)=>p.n+" "+Math.round(b[i])+"–"+Math.round(b[i+1])+" s").join(" · ")+(j.note?". Nota dell’AI: "+j.note:"")+" Se qualcosa non torna, correggi nelle Opzioni.";ok=true;
+  }catch(e){
+    const c=e&&e.code;st.textContent=c==="cancelled"?"Analisi fermata.":c==="not_granted"?"Non hai dato il permesso all’AI: uso la ricerca automatica delle stanze.":c==="rate_limited"?"Troppe richieste all’AI: aspetta un minuto. Intanto uso la ricerca automatica.":c==="bad_json"?"L’AI ha risposto in modo poco chiaro"+(e.detail?" ("+e.detail+")":"")+": uso la ricerca automatica delle stanze.":"L’AI non ha risposto ("+(c||(e&&e.message)||"errore")+"): uso la ricerca automatica delle stanze."}
+  finally{go.disabled=false;sp.hidden=true;AIC=null}
+  return ok}
+$("#aiGo").addEventListener("click",()=>{aiAnalyze()});$("#aiStop").addEventListener("click",()=>{if(AIC)AIC.abort()});
+/* [v3.28 NUOVO] codice appartamento: una riga «TAGLI … | Stanza, Stanza, …» compila tagli manuali e ordine delle stanze */
+function applyCode(){const v=($("#acode").value||"").trim(),o=$("#acodeok");if(!v){o.textContent="";return}
+  const p=v.split("|");if(p.length!==2){o.textContent="✗ Codice non valido: copia la riga intera, con il segno | in mezzo.";return}
+  const cuts=p[0].replace(/^\s*TAGLI\s*/i,"").trim(),nc=cuts.split(/[;\s]+/).filter(Boolean).length,
+    names=p[1].split(/[,;]+/).map(x=>x.trim().toLowerCase()).filter(Boolean).map(x=>x==="camera"?"camere":x==="bagno"?"bagni":x),map={};
+  document.querySelectorAll(".rc").forEach(r=>{map[r.dataset.n.toLowerCase()]=r.id.slice(3)});
+  const bad=names.filter(n=>!map[n]);if(bad.length){o.textContent="✗ Stanza sconosciuta nel codice: "+bad[0];return}
+  if(names.length!==nc+1){o.textContent="✗ Il codice non torna: "+nc+" tagli vogliono "+(nc+1)+" stanze, ce ne sono "+names.length+".";return}
+  document.querySelectorAll(".rc").forEach(r=>{r.value=0});ROOMSEQ=[];names.forEach(n=>{const k=map[n];$("#rc_"+k).value=(+$("#rc_"+k).value)+1;ROOMSEQ.push(k)});
+  $("#acuts").value=cuts;rcUpd();o.textContent="✓ Codice applicato: "+names.length+" stanze e "+nc+" tagli. Ora premi «Crea video».";}
 function rcUpd(){
   let tot=0;const nomi=[];document.querySelectorAll(".rc").forEach(x=>{const n=+x.value;$("#rcv_"+x.id.slice(3)).textContent=n;if(n>0){tot+=n;nomi.push(n+" "+x.dataset.n.toLowerCase())}});
-  if(tot>0){$("#arooms").value=Math.min(20,Math.max(2,tot));$("#rctot").textContent="Totale: "+tot+" — "+nomi.join(", ")+". Il tool cerca "+$("#arooms").value+" parti."}
+  if(tot>0){$("#arooms").value=Math.min(20,Math.max(2,tot));const sg={Camere:"Camera",Bagni:"Bagno"},ord=ROOMSEQ.map(k=>{const n=$("#rc_"+k).dataset.n;return sg[n]||n});$("#rctot").textContent="Totale: "+tot+". Ordine di visita: "+ord.join(" → ")+". Il tool cerca "+$("#arooms").value+" parti."}
   else{$("#arooms").value=0;$("#rctot").textContent="Nessuna stanza indicata: il tool sceglie da solo."}
 }
-document.querySelectorAll(".stp button").forEach(b=>b.onclick=()=>{const i=$("#rc_"+b.dataset.k);i.value=Math.max(0,Math.min(5,(+i.value)+(+b.dataset.d)));rcUpd()});
+/* [v3.25 NUOVO] ordine di visita: ogni + aggiunge la stanza in fondo, ogni − toglie l'ultima di quel tipo */
+var ROOMSEQ=[];$("#acode").addEventListener("input",applyCode);$("#acode").addEventListener("change",applyCode);
+document.querySelectorAll(".stp button").forEach(b=>b.onclick=()=>{const k=b.dataset.k,i=$("#rc_"+k),v=+i.value,d=+b.dataset.d;
+  if(d>0&&v<5){i.value=v+1;ROOMSEQ.push(k)}else if(d<0&&v>0){i.value=v-1;const p=ROOMSEQ.lastIndexOf(k);if(p>=0)ROOMSEQ.splice(p,1)}rcUpd()});
 var LITE=false,PREV=false,OFFOK=!!(window.VideoEncoder&&window.AudioEncoder&&window.VideoFrame&&window.AudioData);
 $("#bLite").onclick=()=>{LITE=!LITE;
   if(LITE){$("#fps").value="30";$("#q").value="720"}else{$("#fps").value="30";$("#q").value="1080"}
