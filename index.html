@@ -2,7 +2,11 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 4.10 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 4.12 — 29/10/2026
+     v4.11 → v4.12: [v4.12 NUOVO] CORRIDOIO DAVVERO PIÙ VELOCE: tolto il tempo minimo che lo teneva sempre uguale (ora minimo 1 secondo); «Corridoio: più veloce di (×)» passa da 1,5 a 2,5 e vale sempre; «secondi in meno» è facoltativo (0). A inizio creazione il tool scrive a che velocità va il corridoio rispetto alle altre stanze, o avvisa se nell’ordine delle stanze non c’è nessun «Corridoio».
+     v4.10 → v4.11: [v4.11] modello Groq aggiornato (errore 404).
+     v4.10 → v4.11: [v4.11 NUOVO] CORRETTO errore 404 di Groq: il modello Llama 4 Scout non esiste più. Ora si usa qwen/qwen3.8-27b (modello con immagini attuale), con 3 immagini per richiesta (planimetria + 2 mosaici) come chiede Groq. Se il modello sparisce ancora, il tool cerca da solo un modello simile nell’elenco di Groq.
+     v4.9 → v4.10: [v4.10] corridoio più veloce.
      v4.9 → v4.10: [v4.10 NUOVO] CORRIDOIO PIÙ VELOCE: nuovo campo «Corridoio: più veloce di (×)» (1,5 predefinito) e «secondi in meno» portato da 2 a 3. Il corridoio ora passa più in fretta anche quando nella ripresa è corto.
      v4.8 → v4.9: [v4.9] planimetria anche in PDF.
      v4.8 → v4.9: [v4.9 NUOVO] la planimetria può essere anche un PDF. Se il PDF ha più pagine, compare una griglia: si tocca la pagina giusta. Per leggere il PDF il tool scarica una volta la libreria pdf.js (serve internet); se non c’è internet ma il PDF contiene una pagina-immagine (scansione), la legge lo stesso. Chiave AI sempre incorporata.
@@ -79,7 +83,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v4.10</title>
+<title>Video Studio Immobiliare v4.12</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -261,7 +265,7 @@ canvas{border:var(--aq-bd)}
       <div class="grid3" style="margin-top:14px"><label>Durata finale (secondi)<input type="number" id="adur" min="5" max="600" value="30"></label><label>Forza dell'accelerazione<select id="rk"><option value="1.5">Dolce</option><option value="2">Leggera</option><option value="3" selected>Media</option><option value="4">Forte</option><option value="6">Fortissima</option></select></label><label>Secondi minimi per ambiente (0 = nessun minimo)<input type="number" id="aminr" min="0" max="20" step="0.5" value="5"></label></div>
       <style>.rlist{display:grid;width:100%;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));column-gap:12px;box-sizing:border-box;border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:2px 10px;margin:6px 0;background:rgba(255,255,255,.04)}.rrow{display:flex;justify-content:space-between;align-items:center;gap:6px;min-height:38px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.10);font-size:13px}.rrow:nth-last-child(-n+2){border-bottom:0}.rrow span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stp{display:flex;align-items:center;gap:3px;flex:none}.stp b{min-width:16px;text-align:center;font-size:15px}.stp button{width:28px;height:28px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:linear-gradient(#2b4a7a,#16294a);color:#fff;font-size:18px;line-height:1;box-shadow:0 2px 0 #0b1830;cursor:pointer}.stp button:active{transform:translateY(1px);box-shadow:0 1px 0 #0b1830}.rtot{margin:6px 0 2px;padding:7px 12px;border-radius:12px;background:rgba(201,162,75,.16);border:1px solid rgba(201,162,75,.5);font-weight:600;font-size:14px}</style><div style="grid-column:1/-1;min-width:0"><div class="hint" style="margin:10px 0 2px"><b>Stanze nel video</b> (facoltativo): tocca + e − per ogni ambiente.</div>
       <label style="margin-top:14px">Codice appartamento (incolla qui la riga che ti dà Claude)<input type="text" id="acode" placeholder="TAGLI 12 22 37 … | Ingresso, Sala, Cucina …" autocomplete="off"></label><p class="hint" id="acodeok" style="margin:6px 0 0"></p>
-      <details style="margin:12px 0"><summary style="cursor:pointer;color:var(--gold2);font-weight:600">Tempi per tipo di stanza e velocità massima</summary><div class="grid3" style="margin-top:10px"><label>Velocità massima di base (×, 0 = nessun limite)<input type="number" id="acap" min="0" max="10" step="0.5" value="2"></label><label>Camere: secondi in più<input type="number" id="acam" min="0" max="15" step="0.5" value="2"></label><label>Corridoio: secondi in meno<input type="number" id="acor" min="0" max="10" step="0.5" value="3"></label><label>Corridoio: più veloce di (×)<input type="number" id="acorv" min="1" max="4" step="0.1" value="1.5"></label></div><label style="margin-top:10px">Tagli manuali: secondi dei cambi stanza, separati da spazio (facoltativo, decimali con la virgola)<input type="text" id="acuts" placeholder="es. 12 22 37 64,5 75" inputmode="decimal"></label><p class="hint" style="margin-top:8px">Se scrivi i tagli, il tool non cerca le stanze da solo: serve una stanza in lista per ogni parte (tagli + 1). Camere e corridoio valgono solo se nella lista stanze tocchi + nell'ordine in cui le visiti. La velocità massima allunga il video se la ripresa è troppo lunga.</p></details>
+      <details style="margin:12px 0"><summary style="cursor:pointer;color:var(--gold2);font-weight:600">Tempi per tipo di stanza e velocità massima</summary><div class="grid3" style="margin-top:10px"><label>Velocità massima di base (×, 0 = nessun limite)<input type="number" id="acap" min="0" max="10" step="0.5" value="2"></label><label>Camere: secondi in più<input type="number" id="acam" min="0" max="15" step="0.5" value="2"></label><label>Corridoio: più veloce di (×)<input type="number" id="acorv" min="1" max="6" step="0.1" value="2.5"></label><label>Corridoio: secondi in meno (facoltativo)<input type="number" id="acor" min="0" max="10" step="0.5" value="0"></label></div><label style="margin-top:10px">Tagli manuali: secondi dei cambi stanza, separati da spazio (facoltativo, decimali con la virgola)<input type="text" id="acuts" placeholder="es. 12 22 37 64,5 75" inputmode="decimal"></label><p class="hint" style="margin-top:8px">Se scrivi i tagli, il tool non cerca le stanze da solo: serve una stanza in lista per ogni parte (tagli + 1). Camere e corridoio valgono solo se nella lista stanze tocchi + nell'ordine in cui le visiti. La velocità massima allunga il video se la ripresa è troppo lunga.</p></details>
       <div class="rlist"><div class="rrow"><span>Ingresso</span><div class="stp"><button type="button" data-k="ingr" data-d="-1" aria-label="meno">−</button><b id="rcv_ingr">0</b><button type="button" data-k="ingr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_ingr" data-n="Ingresso" value="0"></div></div><div class="rrow"><span>Corridoio</span><div class="stp"><button type="button" data-k="cor" data-d="-1" aria-label="meno">−</button><b id="rcv_cor">0</b><button type="button" data-k="cor" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cor" data-n="Corridoio" value="0"></div></div><div class="rrow"><span>Cucina</span><div class="stp"><button type="button" data-k="cuc" data-d="-1" aria-label="meno">−</button><b id="rcv_cuc">0</b><button type="button" data-k="cuc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cuc" data-n="Cucina" value="0"></div></div><div class="rrow"><span>Sala</span><div class="stp"><button type="button" data-k="sala" data-d="-1" aria-label="meno">−</button><b id="rcv_sala">0</b><button type="button" data-k="sala" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_sala" data-n="Sala" value="0"></div></div><div class="rrow"><span>Camere</span><div class="stp"><button type="button" data-k="cam" data-d="-1" aria-label="meno">−</button><b id="rcv_cam">0</b><button type="button" data-k="cam" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cam" data-n="Camere" value="0"></div></div><div class="rrow"><span>Bagni</span><div class="stp"><button type="button" data-k="bag" data-d="-1" aria-label="meno">−</button><b id="rcv_bag">0</b><button type="button" data-k="bag" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_bag" data-n="Bagni" value="0"></div></div><div class="rrow"><span>Balcone</span><div class="stp"><button type="button" data-k="balc" data-d="-1" aria-label="meno">−</button><b id="rcv_balc">0</b><button type="button" data-k="balc" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_balc" data-n="Balcone" value="0"></div></div><div class="rrow"><span>Terrazzo</span><div class="stp"><button type="button" data-k="terr" data-d="-1" aria-label="meno">−</button><b id="rcv_terr">0</b><button type="button" data-k="terr" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_terr" data-n="Terrazzo" value="0"></div></div><div class="rrow"><span>Giardino</span><div class="stp"><button type="button" data-k="giar" data-d="-1" aria-label="meno">−</button><b id="rcv_giar">0</b><button type="button" data-k="giar" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_giar" data-n="Giardino" value="0"></div></div><div class="rrow"><span>Cantina</span><div class="stp"><button type="button" data-k="cant" data-d="-1" aria-label="meno">−</button><b id="rcv_cant">0</b><button type="button" data-k="cant" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_cant" data-n="Cantina" value="0"></div></div><div class="rrow"><span>Altro</span><div class="stp"><button type="button" data-k="altro" data-d="-1" aria-label="meno">−</button><b id="rcv_altro">0</b><button type="button" data-k="altro" data-d="1" aria-label="più">+</button><input type="hidden" class="rc" id="rc_altro" data-n="Altro" value="0"></div></div></div>
       <p class="rtot" id="rctot">Nessuna stanza indicata: il tool sceglie da solo.</p></div>
       <label>Numero di stanze (0 = automatico)<input type="number" id="arooms" min="0" max="20" value="0"></label>
@@ -405,7 +409,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="4.10";
+const VERSION="4.12";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -457,7 +461,7 @@ const DL=c=>{const t=c&&c.type;if(t==="cam")return Math.max(0,+$("#acam").value|
 const DSUM=()=>clips.reduce((a,c)=>a+DL(c),0);
 /* [v3.27] durata di ogni ambiente: proporzionale alla ripresa + camere/corridoio, con minimo, e mai più lenta del tempo reale */
 const hiD=(c,ri)=>(c.end-c.start)*ri;
-const loD=(c,ri)=>MINR()>0?Math.min(hiD(c,ri),Math.max(1.5,MINR()+DL(c))):Math.min(hiD(c,ri),0.5);
+const loD=(c,ri)=>c&&c.type==="cor"?Math.min(hiD(c,ri),1):MINR()>0?Math.min(hiD(c,ri),Math.max(1.5,MINR()+DL(c))):Math.min(hiD(c,ri),0.5);
 const minTotal=()=>{const ri=rampI();return clips.reduce((a,c)=>a+loD(c,ri),0)};
 const FCOR=c=>c&&c.type==="cor"?Math.max(1,+$("#acorv").value||1):1;/* [v4.10 NUOVO] il corridoio conta come se la ripresa fosse più lunga: passa più veloce */
 const roomDurs=()=>{const N=clips.length,T=perClip()*N,ri=rampI(),L=clips.map(c=>c.end-c.start),H=clips.map(c=>hiD(c,ri)),Lo=clips.map(c=>loD(c,ri)),Dl=clips.map(DL),W=clips.map((c,i)=>L[i]/FCOR(c)),sum=x=>x.reduce((p,q)=>p+q,0);
@@ -610,7 +614,8 @@ $("#bAuto").onclick=async()=>{
   if(Math.max(need1,need2)>tgt+0.05){const why=need2>need1?"per non superare "+cap+"× di velocità di base":"per dare almeno "+MINR()+" s a ogni ambiente";tgt=Math.min(900,Math.ceil(Math.max(need1,need2)));alz=" Durata portata a "+tgt+" s "+why+" (li cambi in «Tempi per tipo di stanza e velocità massima»)."+tn;tn=""}
   $("#pcd").value=((tgt-($("#fin").checked?END:0))/clips.length).toFixed(3);/* [v3.17] la durata comprende il cartello finale */$("#trs").value="none";$("#kb").checked=false;renderList();
   const sp=clips.map(cspd);
-  A.textContent="2/3 "+clips.length+" stanze trovate."+alz+tn+" Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×. 3/3 Creo il video con la musica…";
+  const cs=clips.map((c,i)=>c.type==="cor"?sp[i]:null).filter(x=>x),oth=clips.map((c,i)=>c.type!=="cor"?sp[i]:null).filter(x=>x),cmsg=cs.length?" Corridoio: "+cs.length+(cs.length>1?" parti":" parte")+" a "+Math.min(...cs).toFixed(1)+"–"+Math.max(...cs).toFixed(1)+"× (le altre stanze in media "+(oth.reduce((a,b)=>a+b,0)/Math.max(1,oth.length)).toFixed(1)+"×).":(ROOMSEQ.length?" Nessun «Corridoio» nell’ordine delle stanze: la velocità del corridoio non si applica.":"");
+  A.textContent="2/3 "+clips.length+" stanze trovate."+alz+tn+" Velocità nelle stanze da "+Math.min(...sp).toFixed(1)+"× a "+Math.max(...sp).toFixed(1)+"×, ai cambi stanza fino a "+(Math.max(...sp)*rk()).toFixed(1)+"×."+cmsg+" 3/3 Creo il video con la musica…";
   await (OFFOK?offline():run(true));
   const a=$("#out a");
   if(a){A.textContent="✓ Video creato: "+clips.length+" stanze. "+lastChk+" Lo rivedi qui sopra nella scheda «Video creato»: premi play. ";A.appendChild(a.cloneNode(true))}
@@ -1093,9 +1098,9 @@ function updPlancia(){const box=$("#pseq"),cuts=($("#acuts").value||"").split(/[
   else{const ok=cuts.length===names.length-1;names.forEach((n,i)=>{const a=i===0?0:cuts[i-1],b=i<cuts.length?cuts[i]:dur;h+='<span class="st"><b>'+(i+1)+'</b>'+n+(ok?" "+Math.round(a)+"–"+(b?Math.round(b):"…")+" s":"")+'</span>'})}
   if(box._h!==h){box.innerHTML=h;box._h=h}}
 setInterval(()=>{try{updPlancia()}catch(e){}},500);
-async function aiSheets(S){
+async function aiSheets(S,perMax){
   const v=document.createElement("video");v.muted=true;v.preload="auto";v.src=aSrc.url;await new Promise(r=>{v.onloadeddata=r;v.onerror=r});
-  const dur=aSrc.dur,step=Math.max(2,Math.ceil(dur/(S*20))),ts=[];for(let t=0;t<dur-0.5;t+=step)ts.push(t);
+  const dur=aSrc.dur,step=Math.max(2,Math.ceil(dur/(S*(perMax||20)))),ts=[];for(let t=0;t<dur-0.5;t+=step)ts.push(t);
   const per=Math.ceil(ts.length/S),cols=Math.min(5,per),rows=Math.ceil(per/cols),tw=Math.floor(1500/cols),th=Math.round(tw*(v.videoHeight||9)/(v.videoWidth||16)),out=[];
   for(let s0=0;s0<ts.length;s0+=per){const cv=document.createElement("canvas");cv.width=cols*tw;cv.height=rows*th;const g=cv.getContext("2d");g.fillStyle="#000";g.fillRect(0,0,cv.width,cv.height);
     const part=ts.slice(s0,s0+per);
@@ -1108,17 +1113,18 @@ async function b64(blob){return await new Promise(r=>{const f=new FileReader();f
 /* [v4.2 NUOVO] chiamata all’AI: dentro claude.ai con l’account di chi guarda; altrimenti con la chiave dell’agenzia */
 async function aiCall(prompt,sheets,signal){
   if(SAMPLE)return await SAMPLE(prompt,{images:[PLANF,...sheets],modelTier:"default",cache:false,signal});
-  if(/^gsk_/.test(getKey())){/* [v4.4 NUOVO] Groq (Llama 4, gratuito senza carta) */
-    const content=[{type:"image_url",image_url:{url:PLANURL}}];for(const sh of sheets)content.push({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+await b64(sh)}});content.push({type:"text",text:prompt});let last=null;
-    for(const model of ["meta-llama/llama-4-scout-17b-16e-instruct","meta-llama/llama-4-maverick-17b-128e-instruct"]){
-      let res;try{res=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",signal,headers:{"content-type":"application/json","authorization":"Bearer "+getKey()},body:JSON.stringify({model,temperature:0.2,max_tokens:2000,messages:[{role:"user",content}]})})}catch(e){if(e&&e.name==="AbortError")throw {code:"cancelled"};throw {code:"network"}}
+  if(/^gsk_/.test(getKey())){/* [v4.11] Groq: modello con immagini = qwen/qwen3.8-27b (max 3 immagini); se sparisce, cerca un modello simile */
+    const content=[{type:"image_url",image_url:{url:PLANURL}}];for(const sh of sheets)content.push({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+await b64(sh)}});content.push({type:"text",text:prompt});
+    const call=async model=>{let res;try{res=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",signal,headers:{"content-type":"application/json","authorization":"Bearer "+getKey()},body:JSON.stringify({model,temperature:0.3,max_completion_tokens:4000,response_format:{type:"json_object"},messages:[{role:"user",content}]})})}catch(e){if(e&&e.name==="AbortError")throw {code:"cancelled"};throw {code:"network"}}
       const j=await res.json().catch(()=>({})),msg=(j.error&&j.error.message)||"";
-      if(res.ok){const tx=(((j.choices||[])[0]||{}).message||{}).content||"";if(tx)return {text:tx};last={code:"bad_json"};continue}
+      if(res.ok){const tx=(((j.choices||[])[0]||{}).message||{}).content||"";return tx?{text:tx}:{code:"bad_json"}}
       if(res.status===401)throw {code:"bad_key",message:msg};
-      if(res.status===429){last={code:"rate_limited",message:msg};continue}
-      if(res.status===413||/too large|too long|context|reduce/i.test(msg))throw {code:"too_big",message:msg};
-      if(res.status===404||(res.status===400&&/model/i.test(msg))){last={code:"api_404",message:msg};continue}
-      throw {code:"api_"+res.status,message:msg}}
+      if(res.status===413||/too large|too long|context|reduce|maximum.*image/i.test(msg))throw {code:"too_big",message:msg};
+      return {code:res.status===429?"rate_limited":(res.status===404||/model/i.test(msg))?"api_404":"api_"+res.status,message:msg}};
+    const cands=["qwen/qwen3.8-27b"];let last=null;
+    for(const m of cands){const r=await call(m);if(r.text)return r;last=r}
+    if(last&&last.code==="api_404"){try{const lr=await fetch("https://api.groq.com/openai/v1/models",{headers:{authorization:"Bearer "+getKey()},signal}),lj=await lr.json(),ids=((lj&&lj.data)||[]).map(x=>x.id).filter(id=>/vision|-vl|qwen|scout|maverick|llama-4|gemma-3|pixtral/i.test(id)&&!/whisper|guard|tts|orpheus|embed/i.test(id)&&!cands.includes(id)).slice(0,4);
+      for(const m of ids){const r=await call(m);if(r.text)return r;last=r;if(r.code!=="api_404")break}}catch(e){if(e&&e.code&&e.code!=="network")throw e}}
     throw last||{code:"api_404"}}
   if(/^AIza/.test(getKey())){/* [v4.3] Google Gemini con la chiave gratuita di AI Studio */
     const parts=[{inline_data:{mime_type:"image/jpeg",data:PLANURL.split(",")[1]}}];for(const sh of sheets)parts.push({inline_data:{mime_type:"image/jpeg",data:await b64(sh)}});parts.push({text:prompt});let last=null;
@@ -1147,8 +1153,8 @@ async function aiAnalyze(){
   if(!aSrc||!aSrc.url){st.textContent="Prima scegli il video.";return false}
   go.disabled=true;sp.hidden=false;AIC=new AbortController();let ok=false;
   try{
-    let S=(!SAMPLE&&/^gsk_/.test(getKey()))?4:5;if(SAMPLE){const lim=await SAMPLE.limits().catch(()=>null);if(!lim||!lim.images){st.textContent="Qui l’AI non può ricevere immagini: uso la ricerca automatica delle stanze.";return false}S=Math.max(1,Math.min(6,(lim.images.maxCount||6)-1))}
-    const sheets=await aiSheets(S);
+    const GQ=!SAMPLE&&/^gsk_/.test(getKey());let S=GQ?2:5;if(SAMPLE){const lim=await SAMPLE.limits().catch(()=>null);if(!lim||!lim.images){st.textContent="Qui l’AI non può ricevere immagini: uso la ricerca automatica delle stanze.";return false}S=Math.max(1,Math.min(6,(lim.images.maxCount||6)-1))}
+    const sheets=await aiSheets(S,GQ?30:20);
     const tipi=[...document.querySelectorAll(".rc")].map(r=>r.dataset.n).join(", ");
     const prompt="Sei un assistente di un’agenzia immobiliare. Ricevi: (1) la PLANIMETRIA dell’appartamento (prima immagine); (2) "+sheets.length+" immagini a griglia con fotogrammi presi da UNA SOLA ripresa continua della visita (camminata con il telefono). Ogni riquadro ha scritto in giallo il secondo del video (es. «12 s»). La ripresa dura "+aSrc.dur.toFixed(1)+" secondi.\n\n"+
     "COMPITO: ricostruisci l’ordine reale in cui la persona ha visitato gli ambienti e per ognuno indica da che secondo a che secondo è inquadrato. Usa la planimetria per capire quali ambienti esistono e come si collegano.\n\n"+
@@ -1165,7 +1171,7 @@ async function aiAnalyze(){
     if(!/^✓/.test($("#acodeok").textContent))throw {code:"bad_json",detail:$("#acodeok").textContent};
     const b=[0,...cuts,aSrc.dur];st.textContent="✓ Fatto: "+parts.map((p,i)=>p.n+" "+Math.round(b[i])+"–"+Math.round(b[i+1])+" s").join(" · ")+(j.note?". Nota dell’AI: "+j.note:"")+" Se qualcosa non torna, correggi nelle Opzioni.";ok=true;
   }catch(e){
-    const c=e&&e.code;st.textContent=c==="cancelled"?"Analisi fermata.":c==="not_granted"?"Non hai dato il permesso all’AI: uso la ricerca automatica delle stanze.":c==="rate_limited"?"L’AI ha raggiunto il limite gratuito: riprova tra qualche minuto (o domani). Intanto uso la ricerca automatica.":c==="bad_key"?"La chiave AI non è valida: controllala (passo 1). Intanto uso la ricerca automatica.":c==="too_big"?"L’AI gratuita non riesce a leggere tante immagini in una volta"+(e.message?" ("+String(e.message).slice(0,80)+")":"")+". Intanto uso la ricerca automatica.":c==="no_credit"?"Il credito della chiave AI è finito: ricaricalo su console.anthropic.com. Intanto uso la ricerca automatica.":c==="network"?"Non riesco a collegarmi all’AI (rete o blocco del browser). Intanto uso la ricerca automatica.":c==="bad_json"?"L’AI ha risposto in modo poco chiaro"+(e.detail?" ("+e.detail+")":"")+": uso la ricerca automatica delle stanze.":"L’AI non ha risposto ("+(c||(e&&e.message)||"errore")+"): uso la ricerca automatica delle stanze."}
+    const c=e&&e.code;st.textContent=c==="cancelled"?"Analisi fermata.":c==="api_404"?"Il modello AI non esiste più (errore 404): serve un aggiornamento del tool. Intanto uso la ricerca automatica delle stanze.":c==="not_granted"?"Non hai dato il permesso all’AI: uso la ricerca automatica delle stanze.":c==="rate_limited"?"L’AI ha raggiunto il limite gratuito: riprova tra qualche minuto (o domani). Intanto uso la ricerca automatica.":c==="bad_key"?"La chiave AI non è valida: controllala (passo 1). Intanto uso la ricerca automatica.":c==="too_big"?"L’AI gratuita non riesce a leggere tante immagini in una volta"+(e.message?" ("+String(e.message).slice(0,80)+")":"")+". Intanto uso la ricerca automatica.":c==="no_credit"?"Il credito della chiave AI è finito: ricaricalo su console.anthropic.com. Intanto uso la ricerca automatica.":c==="network"?"Non riesco a collegarmi all’AI (rete o blocco del browser). Intanto uso la ricerca automatica.":c==="bad_json"?"L’AI ha risposto in modo poco chiaro"+(e.detail?" ("+e.detail+")":"")+": uso la ricerca automatica delle stanze.":"L’AI non ha risposto ("+(c||(e&&e.message)||"errore")+"): uso la ricerca automatica delle stanze."}
   finally{go.disabled=false;sp.hidden=true;AIC=null}
   return ok}
 $("#aiGo").addEventListener("click",()=>{aiAnalyze()});$("#aiStop").addEventListener("click",()=>{if(AIC)AIC.abort()});
