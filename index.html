@@ -2,7 +2,11 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 4.6 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 4.8 — 29/10/2026
+     v4.7 → v4.8: [v4.8 NUOVO] chiave Groq dell’agenzia INSERITA nella riga CHIAVE_INCORPORATA: su ogni computer non serve incollare niente. Nessun altro cambiamento.
+     v4.6 → v4.7: [v4.7] riga CHIAVE_INCORPORATA (vuota).
+     v4.6 → v4.7: [v4.7 NUOVO] CHIAVE INCORPORATA: si scrive una volta sola nella riga «CHIAVE_INCORPORATA» e il tool funziona su ogni computer senza incollare niente. Se la riga è vuota, tutto come prima (campo «Chiave AI»).
+     v4.5 → v4.6: [v4.6] riquadro AI spiegato anche dentro claude.ai.
      v4.5 → v4.6: [v4.6 NUOVO] dentro claude.ai il riquadro «Analisi automatica con l’AI» non appare più senza campo: spiega che lì l’AI funziona già con l’account Claude e che la chiave serve solo fuori da Claude (file sul computer o sito proprio).
      v4.4 → v4.5: [v4.5] corretti pulsanti nascosti, campo chiave largo, frase ripetuta.
      v4.4 → v4.5: [v4.5 NUOVO] corretti difetti nella scheda AI: i pulsanti «Togli la chiave» e «Ferma» comparivano anche quando non servivano, il campo della chiave era minuscolo, una frase era ripetuta due volte.
@@ -71,7 +75,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v4.6</title>
+<title>Video Studio Immobiliare v4.8</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -395,7 +399,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="4.6";
+const VERSION="4.8";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -1037,10 +1041,13 @@ async function run(rec){
 /* [v4.0 NUOVO] versione web: AI (guarda ripresa + planimetria) e salvataggio del video nella pagina pubblicata */
 var SAMPLE=null,DLCAP=null,PLANF=null,AIC=null;
 const BLOBS=new Map();(function(){const c=URL.createObjectURL.bind(URL);URL.createObjectURL=function(b){const u=c(b);BLOBS.set(u,b);return u}})();
-function getKey(){try{return localStorage.getItem("vsi_aikey")||""}catch(e){return ""}}
+/* [v4.7 NUOVO] CHIAVE INCORPORATA: incolla qui tra le virgolette la chiave gratuita (gsk_…), una sola volta. Chiunque apra il file può leggerla: usa solo una chiave gratuita che puoi cancellare quando vuoi. */
+const CHIAVE_INCORPORATA="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";
+function getKey(){let k="";try{k=localStorage.getItem("vsi_aikey")||""}catch(e){}return k||CHIAVE_INCORPORATA}
 function setKey(v){try{if(v)localStorage.setItem("vsi_aikey",v);else localStorage.removeItem("vsi_aikey")}catch(e){}}
 function AIOK(){return !!SAMPLE||!!getKey()}
-function keyUI(){const k=getKey();$("#akeyst").textContent=k?"✓ Chiave salvata su questo computer (…"+k.slice(-4)+").":"Serve per l’analisi automatica. Senza chiave il tool cerca le stanze da solo, meno bene.";$("#akey").placeholder=k?"•••••• (salvata)":"gsk_…";$("#akeyx").hidden=!k;$("#akeyhow").hidden=!!k}
+function keyUI(){const emb=!!CHIAVE_INCORPORATA&&!(function(){try{return localStorage.getItem("vsi_aikey")}catch(e){return ""}})();const k=getKey();$("#akeyst").textContent=k?"✓ Chiave salvata su questo computer (…"+k.slice(-4)+").":"Serve per l’analisi automatica. Senza chiave il tool cerca le stanze da solo, meno bene.";$("#akey").placeholder=k?"•••••• (salvata)":"gsk_…";$("#akeyx").hidden=!k||emb;$("#akeyhow").hidden=!!k;
+  if(emb){const lb=$("#akey").closest("label");if(lb)lb.hidden=true;$("#akeyst").textContent="✓ La chiave dell’agenzia è già dentro il tool: non devi inserire niente."}}
 $("#akey").addEventListener("change",()=>{const v=$("#akey").value.trim();$("#akey").value="";if(!v)return;if(!/^(gsk_|AIza|sk-ant-)/.test(v)){$("#akeyst").textContent="✗ Questa non sembra una chiave giusta: deve iniziare con gsk_ (Groq), AIza (Google) o sk-ant- (Anthropic).";return}setKey(v);keyUI()});
 $("#akeyx").addEventListener("click",()=>{setKey("");keyUI()});
 (async()=>{try{if(window.claude&&claude.use){claude.use("downloads").then(d=>{DLCAP=d}).catch(()=>{});const sm=await claude.use("sample");if(sm)SAMPLE=sm}}catch(e){}$("#akeybox").hidden=false;keyUI();
