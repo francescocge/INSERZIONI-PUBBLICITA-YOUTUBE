@@ -2,7 +2,9 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<!-- VIDEO STUDIO IMMOBILIARE — versione 4.16 — 29/10/2026
+<!-- VIDEO STUDIO IMMOBILIARE — versione 4.17 — 29/10/2026
+     v4.16 → v4.17: [v4.17 NUOVO] inserito l’indirizzo del servizio AI dell’agenzia nella riga SERVIZIO_AI (non è un segreto). Nessuna chiave nel file. Nessun altro cambiamento.
+     v4.15 → v4.16: [v4.16] nessuna chiave nel file, servizio AI su Cloudflare.
      v4.15 → v4.16: [v4.16 NUOVO] SICUREZZA: nel file NON c’è più nessuna chiave (la vecchia è stata pubblicata per errore su GitHub e va cancellata). Nuova riga SERVIZIO_AI: indirizzo di un piccolo servizio gratuito (Cloudflare Worker) che tiene la chiave nascosta. Il tool chiama il servizio e nessuno può leggere la chiave dalla pagina. Il campo «Chiave AI» resta come alternativa su un solo computer.
      v4.14 → v4.15: [v4.15] passo 1 a sezioni.
      v4.14 → v4.15: [v4.15 NUOVO] PASSO 1 A SEZIONI: A scegli il video · B trova le stanze con l’AI (planimetria, ordine, analisi, e il riquadro «Se l’AI non azzecca le stanze» con 3 casi e pulsanti) · C come montare il video · D avanzate (codice, tagli, lista + e −, di solito non serve). Nuova riga «Cosa fare adesso» sotto la plancia. Nessuna funzione tolta.
@@ -91,7 +93,7 @@
 <meta name="description" content="Video Studio Immobiliare: crea video 16:9 (YouTube, Immobiliare.it) e 9:16 (Instagram, TikTok, Shorts) con musica, scritte e cartello finale.">
 <meta name="theme-color" content="#0d1a2b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a24b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-7 9 7'/%3E%3Cpath d='M5 10v10h14V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E">
-<title>Video Studio Immobiliare v4.16</title>
+<title>Video Studio Immobiliare v4.17</title>
 <style>
 :root{--navy:#0d1a2b;--navy2:#162b45;--card:#1b3250;--line:#2c4766;--slate:#9fb0c4;--gold:#c9a24b;--gold2:#ecd08a;--txt:#eef2f7}
 *{box-sizing:border-box}
@@ -441,7 +443,7 @@ canvas{border:var(--aq-bd)}
 
 <script>
 "use strict";
-const VERSION="4.16";
+const VERSION="4.17";
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cv=$("#cv"),g=cv.getContext("2d");
@@ -1088,7 +1090,7 @@ async function run(rec){
 var SAMPLE=null,DLCAP=null,PLANF=null,AIC=null;
 const BLOBS=new Map();(function(){const c=URL.createObjectURL.bind(URL);URL.createObjectURL=function(b){const u=c(b);BLOBS.set(u,b);return u}})();
 /* [v4.16] NON scrivere MAI una chiave dentro questo file: se il file va su GitHub pubblico, la chiave viene rubata. Usa SERVIZIO_AI. */
-const SERVIZIO_AI="";/* [v4.16 NUOVO] indirizzo del servizio AI dell’agenzia (https://….workers.dev): la chiave sta lì, nascosta, non nel file. Si può pubblicare su GitHub senza rischi. */
+const SERVIZIO_AI="https://video-immobiliare-ai.rocabni.workers.dev";/* [v4.16 NUOVO] indirizzo del servizio AI dell’agenzia (https://….workers.dev): la chiave sta lì, nascosta, non nel file. Si può pubblicare su GitHub senza rischi. */
 function getKey(){let k="";try{k=localStorage.getItem("vsi_aikey")||""}catch(e){}return k}
 function setKey(v){try{if(v)localStorage.setItem("vsi_aikey",v);else localStorage.removeItem("vsi_aikey")}catch(e){}}
 function AIOK(){return !!SAMPLE||!!getKey()||!!SERVIZIO_AI}
